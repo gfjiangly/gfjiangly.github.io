@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="多线程,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="翻译自：https://preshing.com/20120710/memory-barriers-are-like-source-control-operations/ 略有修改  如果使用源代码控制，那么您将逐渐理解内存顺序，这是使用C，C ++和其他语言编写无锁代码时的重要考虑因素。[PS：内存顺序真的很重要，问题不仅仅来源于CPU的多层次存储系统，事实上这个问题在处理器层次已经比较好的解">
+<meta name="keywords" content="多线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="内存屏障就像源码控制操作一样">
+<meta property="og:url" content="https://gfjiangly.github.io/cpu_parallel/memory_fence.html">
+<meta property="og:site_name" content="jiang">
+<meta property="og:description" content="翻译自：https://preshing.com/20120710/memory-barriers-are-like-source-control-operations/ 略有修改  如果使用源代码控制，那么您将逐渐理解内存顺序，这是使用C，C ++和其他语言编写无锁代码时的重要考虑因素。[PS：内存顺序真的很重要，问题不仅仅来源于CPU的多层次存储系统，事实上这个问题在处理器层次已经比较好的解">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://gfjiangly.github.io/images/cpu-diagram.png">
+<meta property="og:image" content="https://gfjiangly.github.io/images/source-control-analogy.png">
+<meta property="og:image" content="https://gfjiangly.github.io/images/marked-example2-2.png">
+<meta property="og:image" content="https://gfjiangly.github.io/images/iriw-state.png">
+<meta property="og:image" content="https://gfjiangly.github.io/images/barrier-types.png">
+<meta property="og:image" content="https://gfjiangly.github.io/images/loadload.png">
+<meta property="og:image" content="https://gfjiangly.github.io/images/storestore.png">
+<meta property="og:image" content="https://gfjiangly.github.io/images/get-back-to-later.png">
+<meta property="og:image" content="https://gfjiangly.github.io/images/storeload.png">
+<meta property="og:updated_time" content="2020-03-03T11:46:36.005Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="内存屏障就像源码控制操作一样">
+<meta name="twitter:description" content="翻译自：https://preshing.com/20120710/memory-barriers-are-like-source-control-operations/ 略有修改  如果使用源代码控制，那么您将逐渐理解内存顺序，这是使用C，C ++和其他语言编写无锁代码时的重要考虑因素。[PS：内存顺序真的很重要，问题不仅仅来源于CPU的多层次存储系统，事实上这个问题在处理器层次已经比较好的解">
+<meta name="twitter:image" content="https://gfjiangly.github.io/images/cpu-diagram.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://gfjiangly.github.io/cpu_parallel/memory_fence.html">
+
+
+
+
+
+  <title>内存屏障就像源码控制操作一样 | jiang</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">jiang</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">工具就是生产力</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-photos">
+          <a href="/photos/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-image"></i> <br>
+            
+            相册
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://gfjiangly.github.io/cpu_parallel/memory_fence.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jiang.G.F">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/gfjiang_avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="jiang">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">内存屏障就像源码控制操作一样</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-16T23:16:00+00:00">
+                2020-02-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/多线程/" itemprop="url" rel="index">
+                    <span itemprop="name">多线程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/cpu_parallel/memory_fence.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/cpu_parallel/memory_fence.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>翻译自：<a href="https://preshing.com/20120710/memory-barriers-are-like-source-control-operations/" target="_blank" rel="noopener">https://preshing.com/20120710/memory-barriers-are-like-source-control-operations/</a></p>
+<p>略有修改</p>
+</blockquote>
+<p>如果使用源代码控制，那么您将逐渐理解内存顺序，这是使用C，C ++和其他语言编写无锁代码时的重要考虑因素。<em>[PS：内存顺序真的很重要，问题不仅仅来源于CPU的多层次存储系统，事实上这个问题在处理器层次已经比较好的解决了。假如只有共享内存，更容易看出真正的问题是：多线程环境下数据对象的败坏。我们所有的努力都是为了数据对象的同步，也就是对读写次序的控制。]</em></p>
+<p>在上一篇文章中，我写了关于<a href="http://preshing.com/20120625/memory-ordering-at-compile-time" target="_blank" rel="noopener">编译期时内存排序</a>，它构成了内存排序难题的一半。这篇文章是关于另一半的：运行时的内存排序，在处理器本身上。*[PS：也就是处理器执行时的指令排序，由处理器决定]*像编译器重新排序一样，处理器重新排序对于单线程程序是不可见的。仅当使用<a href="http://preshing.com/20120612/an-introduction-to-lock-free-programming" target="_blank" rel="noopener">无锁技术</a>时，即在没有线程之间相互排斥的情况下操作共享内存时，这种情况才变得明显。但是，与编译器重新排序不同，处理器重新排序的效果<a href="http://preshing.com/20120515/memory-reordering-caught-in-the-act" target="_blank" rel="noopener">仅在多核和多处理器系统中可见</a>。</p>
+<p>您可以通过发出任何充当<strong>内存屏障</strong>的指令来在处理器上强制执行正确的内存排序。在某些方面，这是您唯一需要知道的技术，因为当您使用这些指令时，编译器的排序会自动执行。用作内存屏障的指令示例包括（但不限于）以下内容：</p>
+<ul>
+<li>GCC中的某些内联汇编指令，例如PowerPC特定的 <code>asm volatile(&quot;lwsync&quot; ::: &quot;memory&quot;)</code></li>
+<li>任何<a href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms684122.aspx" target="_blank" rel="noopener">Win32互锁操作</a>，Xbox 360除外</li>
+<li>对<a href="http://en.cppreference.com/w/cpp/atomic/atomic" target="_blank" rel="noopener">C ++ 11原子类型</a>的许多操作，例如<code>load(std::memory_order_acquire)</code></li>
+<li>POSIX互斥锁上的操作，例如 <a href="http://linux.die.net/man/3/pthread_mutex_lock" target="_blank" rel="noopener"><code>pthread_mutex_lock</code></a></li>
+</ul>
+<p>就像有许多指令充当内存屏障一样，也有许多不同类型的内存屏障需要了解。确实，并非所有上述指令都会产生相同类型的内存障碍 - 导致在编写无锁代码时出现另一个可能的混乱地方。为了在某种程度上解决问题，我想提供一个类比，它有助于理解绝大多数（但不是全部）可能的内存屏障类型。</p>
+<p>首先，请考虑典型的多核系统的体系结构。这是一个具有两个内核的设备，每个内核具有32 KiB的私有L1数据缓存。两个内核之间共享1 MiB的L2高速缓存，以及512 MiB的主内存。</p>
+<p><img src="/images/cpu-diagram.png" alt="img"></p>
+<p>多核系统有点像一群程序员使用一种奇怪的源代码控制策略在一个项目上进行协作。例如，上述双核系统对应于只有两个程序员的情况。我们命名为拉里和谢盖尔。</p>
+<p><img src="/images/source-control-analogy.png" alt="img"></p>
+<p>在右侧，我们有一个共享的中央存储库–它表示主内存和共享的L2缓存的组合。拉里在他的本地计算机上拥有该存储库的完整工作副本，谢盖尔也是如此 – 这些（有效地）代表了附加到每个CPU内核的L1缓存。每台机器上都有一个暂存区，用于私下跟踪寄存器和/或局部变量。我们的两个程序员坐在那里，狂热地编辑他们的工作副本和暂存区，同时根据所看到的数据来决定下一步的工作-就像在该内核上运行的执行线程一样。</p>
+<p>这将我们带到了源代码控制策略。以此类推，源代码控制策略确实非常奇怪。当拉里和谢盖尔修改其存储库的工作副本时，他们的修改总是在完全随机的时间在后台向中央存储库和从中央存储库<strong>泄漏</strong>。一旦拉里编辑了文件X，他的更改将泄漏到中央存储库，但不能保证何时发生。它可能会立即发生，也可能会在很多以后发生。他可能会继续编辑其他文件，例如Y和Z，并且这些修改可能会<em>在</em> X泄漏<em>之前</em>泄漏到存储库中。通过这种方式，可以有效地将存储重新排序到存储库。</p>
+<p>同样，谢尔盖的机器上，没有关于这些变化在后台向中央存储库和从中央存储库<strong>泄漏</strong>的时间和顺序保证。通过这种方式，加载将高效地以它的方式重新排序。</p>
+<p>现在，如果每个程序员都在存储库的完全独立的部分上工作，那么任何一个程序员都不会知道这些正在进行的背后泄漏，甚至都不知道另一个程序员的存在。这类似于运行两个独立的单线程进程。在这种情况下，将<a href="http://preshing.com/20120625/memory-ordering-at-compile-time" target="_blank" rel="noopener">保持内存排序的基本规则</a>。</p>
+<p>一旦我们的程序员开始处理存储库的相同部分，该类比就变得更加有用。让我们回顾一下我<a href="http://preshing.com/20120515/memory-reordering-caught-in-the-act" target="_blank" rel="noopener">在较早的文章中</a>给出的示例。X和Y是全局变量，都初始为0：</p>
+<p><img src="/images/marked-example2-2.png" alt="img"></p>
+<p>将X和Y视为存在于拉里存储库的工作副本，谢盖尔的工作副本以及中央存储库本身上的文件。拉里在其工作副本X中写入1，而几乎同时谢尔盖在其工作副本Y中写入1。如果两个修改都没有时间泄漏到存储库中，然后又在每个程序员查找<em>另一个</em>文件的工作副本之前返回，则最终它们都将以r1 = 0和r2 = 0结束。实际上在源代码控制类比中变得很明显。</p>
+<p><img src="/images/iriw-state.png" alt="img"></p>
+<h2 id="内存屏障的类型"><a href="#内存屏障的类型" class="headerlink" title="内存屏障的类型"></a>内存屏障的类型</h2><p>幸运的是，拉里和谢盖尔并不完全受后台发生的这些随机的、不可预测的泄漏的影响。它们还具有发出特殊指令的能力，称为屏障( <em>fence</em> )指令，扮演内存屏障角色。对于这个比喻，定义四种类型的内存屏障就足够了，因此定义了四种不同的屏障指令就足够了。每种类型的内存屏障均以其，旨在防止的内存重新排序类型来命名：例如，<code>#StoreLoad</code>旨在防止存储紧随加载后的重新排序。</p>
+<p><img src="/images/barrier-types.png" alt="img"></p>
+<p>正如<a href="http://g.oswego.edu/dl/jmm/cookbook.html" target="_blank" rel="noopener">Doug Lea指出的那样</a>，这四个类别可以很好地映射到真实CPU上的特定指令，尽管不完全相同。在大多数情况下，实际的CPU指令可能是上述屏障类型的某种组合，可能还有其他影响。无论如何，一旦您理解了这四种类型的内存障碍在源代码控制类比中，就可以很好地了解它们在真实CPU上的大量指令以及几种高级编程语言构造。</p>
+<h3 id="LoadLoad"><a href="#LoadLoad" class="headerlink" title="#LoadLoad"></a>#LoadLoad</h3><p>LoadLoad屏障有效地防止了在屏障之前执行的加载和在屏障之后执行的加载之间的重排列。</p>
+<p>以我们的类比，<code>#LoadLoad</code>fence指令基本上等效于从中央存储库中<strong>pull</strong>信息。想想<code>git pull</code>，<code>hg pull</code>，<code>p4 sync</code>，<code>svn update</code>或者<code>cvs update</code>对整个存储库的作用。如果与他的本地更改存在任何合并冲突，我们可以说它们是随机解决的。</p>
+<p><img src="/images/loadload.png" alt="img"></p>
+<p>提醒您，我们无法保证<code>#LoadLoad</code>会<code>pull</code>整个存储库的最新修订版本！ 可能拉取到比head更旧的修订版，只要修订版至少与从中央仓库泄漏到本地机器的最新值一样新就行。</p>
+<p>这听起来像是一个薄弱的保证，但它仍然是防止看到陈旧数据的绝妙方法。考虑一下经典示例，其中谢盖尔检查一个共享标志，以查看拉里是否已发布某些数据。如果该标志为真，则<code>#LoadLoad</code>在读取发布的值之前，他将发布一个屏障：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (IsPublished)                   <span class="comment">// Load and check shared flag</span></span><br><span class="line">&#123;</span><br><span class="line">    LOADLOAD_FENCE();              <span class="comment">// Prevent reordering of loads</span></span><br><span class="line">    <span class="keyword">return</span> Value;                  <span class="comment">// Load published value</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>显然，此示例取决于<code>IsPublished</code>标志本身是否泄漏到谢盖尔的工作副本中。何时发生并不重要。一旦观察到泄漏的标志，他就会发出<code>#LoadLoad</code>屏障以防止读取<code>Value</code>比标志本身还旧的值。</p>
+<h3 id="StoreStore"><a href="#StoreStore" class="headerlink" title="#StoreStore"></a>#StoreStore</h3><p>StoreStore屏障有效地防止了在屏障之前执行的存储与屏障之后执行的存储的重新排序。</p>
+<p>以我们的比喻，<code>#StoreStore</code>fence指令对应于对中央存储库的<strong>push</strong>。想想<code>git push</code>，<code>hg push</code>，<code>p4 submit</code>，<code>svn commit</code>或者<code>cvs commit</code>，对整个存储库的作用。</p>
+<p><img src="/images/storestore.png" alt="img"></p>
+<p>另外，让我们假设<code>#StoreStore</code>指令<strong>不是即时的</strong>。它们以延迟的异步方式执行。因此，即使拉里执行了<code>#StoreStore</code>，我们也无法对他所有以前的存储何时最终在中央存储库中可见做出任何假设。</p>
+<p>同样，这听起来似乎是一个薄弱的保证，但再次足以防止谢盖尔看到拉里发布的任何过时数据。回到上面的相同示例，拉里只需要将一些数据发布到共享内存，发出<code>#StoreStore</code>屏障，然后将共享标志设置为true：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Value = x;                         <span class="comment">// Publish some data</span></span><br><span class="line">STORESTORE_FENCE();</span><br><span class="line">IsPublished = <span class="number">1</span>;                   <span class="comment">// Set shared flag to indicate availability of data</span></span><br></pre></td></tr></table></figure>
+
+<p>再次，我们指望<code>IsPublished</code>自己从拉里的工作副本泄漏到谢尔盖的。一旦谢尔盖检测到，他就能确信自己会看到的正确<code>Value</code>值。有趣的是，要使这种模式起作用，<code>Value</code>甚至不需要是原子类型。它也可能是一个包含许多元素的巨大结构。</p>
+<h3 id="LoadStore"><a href="#LoadStore" class="headerlink" title="#LoadStore"></a>#LoadStore</h3><p><img src="/images/get-back-to-later.png" alt="img"></p>
+<p>与<code>#LoadLoad</code>和不同<code>#StoreStore</code>，<code>#LoadStore</code>在源代码控制操作方面没有巧妙的隐喻。理解<code>#LoadStore</code>屏障的最好方法很简单，就是在指令重新排序方面。</p>
+<p>想象一下，拉里有一系列要遵循的指示。有些指令使他将自己的私人工作副本中的数据加载到寄存器中，有些指令使他将寄存器中的数据存储回了工作副本中。拉里可以处理指令，但只能在特定情况下使用。每当遇到加载时，他都会提前看看即将出现的任何存储。如果存储与当前加载完全无关，则允许他跳过，先进行存储，然后再返回以完成加载。在这种情况下，仍然遵循内存排序的基本规则（从不修改单线程程序的行为）。</p>
+<p>在实际的CPU上，如果在加载时出现缓存未命中，然后在存储中命中缓存，则某些处理器可能会发生这种指令重新排序。但是就理解比喻而言，此类硬件细节并不重要。我们可以说拉里的工作很无聊，这是他被允许发挥创造力的几次机会之一。他是否选择这样做完全是不可预测的。幸运的是，这是一种相对轻量的重新排序类型；当拉里遇到<code>#LoadStore</code>屏障时，他只是避免围绕该屏障进行这种重新排序。</p>
+<p>以我们的比喻，即使加载与存储之间存在<code>#LoadLoad</code>或<code>#StoreStore</code>屏障，对于拉里执行这种LoadStore重排序也是合法的。但是，在实际的CPU上，充当<code>#LoadStore</code>屏障的指令通常充当其他两种屏障类型中的至少一种。</p>
+<h3 id="StoreLoad"><a href="#StoreLoad" class="headerlink" title="#StoreLoad"></a>#StoreLoad</h3><p>StoreLoad屏障可确保屏障之前执行的所有存储对于其他处理器都是可见的，并且屏障之后执行的所有加载都将收到屏障时可见的最新值。换句话说，它有效地防止了屏障之前所有存储的重新排序，使其免受屏障之后的所有加载的影响，并<a href="http://preshing.com/20120612/an-introduction-to-lock-free-programming#sequential-consistency" target="_blank" rel="noopener">遵循顺序一致的</a>多处理器执行这些操作的方式。</p>
+<p><code>#StoreLoad</code>是独特的。这是唯一一种可以防止在 <a href="http://preshing.com/20120515/memory-reordering-caught-in-the-act" target="_blank" rel="noopener">Memory Reordering Caught in the Act</a> 的例子中，出现<code>r1 = r2 = 0</code>结果的内存屏障类型；我在本文前面重复过的示例相同。</p>
+<p>如果您一直在密切关注，您可能会想：<code>#StoreLoad</code>与一个<code>#StoreStore</code>后面跟着一个<code>#LoadLoad</code>有什么区别？毕竟，<code>#StoreStore</code>将更改推送到中央存储库，而<code>#LoadLoad</code>将远程更改拉回。但这两种屏障类型不完备。请记住，推送操作可能会延迟任意数量的指令，并且推送操作可能不会从头部修订版中提取。这暗示了为什么PowerPC的<code>lwsync</code>指令-它充当<code>#LoadLoad</code>，<code>#LoadStore</code>和<code>#StoreStore</code>三个内存障碍，但没有<code>#StoreLoad</code>- 在这个例子中是不足以防止<code>r1 = r2 = 0</code>的。</p>
+<p>从比喻的角度来看，<code>#StoreLoad</code>可以通过将所有本地更改推送到中央后备仓库，等待该操作完成，然后拉动存储库的最新绝对头版修订来实现障碍。在大多数处理器上，充当<code>#StoreLoad</code>屏障的指令往往比充当其他屏障类型的指令更昂贵。</p>
+<p><img src="/images/storeload.png" alt="img"></p>
+<p>如果我们在该操作中设置<code>#LoadStore</code>屏碍，这没什么大不了的，那么我们得到的是完整的内存屏障 - 一次充当所有四种屏障类型。<a href="http://g.oswego.edu/dl/jmm/cookbook.html" target="_blank" rel="noopener">正如Doug Lea所指出的</a>那样，在所有当前处理器上，每条充当<code>#StoreLoad</code>屏障的指令也充当了完整的内存屏障。</p>
+<h2 id="这个比喻能带您到多远？"><a href="#这个比喻能带您到多远？" class="headerlink" title="这个比喻能带您到多远？"></a>这个比喻能带您到多远？</h2><p>如前所述，每个处理器在内存排序方面都有不同的习惯。尤其是x86/64系列，具有强内存模型。已知将内存重新排序保持在最低限度。PowerPC和ARM的内存模型较弱，而Alpha则以其独树一帜而闻名。幸运的是，本文中提出的类比喻对应于一个<a href="http://preshing.com/20120930/weak-vs-strong-memory-models" target="_blank" rel="noopener">弱内存模型</a>。如果您蒙起头来，并按照此处给出的屏障指令执行正确的内存排序，则您应该能够处理大多数CPU。</p>
+<p>该比喻还非常符合C ++ 11（以前称为C ++ 0x）和C11所针对的抽象机。因此，如果您使用这些语言的标准库编写无锁代码，同时牢记上述类比，则它更有可能在任何平台上正常运行。</p>
+<p>以此比喻，我说过每个程序员代表一个运行在单独内核上的执行线程。在实际的操作系统上，线程倾向于在其整个生命周期中在不同的内核之间移动，但是比喻仍然有效。我还在机器语言的示例和用C/C ++编写的示例之间进行了交替。显然，我们更喜欢使用C/C ++或另一种高级语言。这是可能的，因为任何充当内存屏障的操作都将阻止<a href="http://preshing.com/20120625/memory-ordering-at-compile-time" target="_blank" rel="noopener">编译器重新排序</a>。</p>
+<p>我还没有写关于每种类型的内存屏障的文章。例如，也存在<a href="http://www.mjmwired.net/kernel/Documentation/memory-barriers.txt#305" target="_blank" rel="noopener">数据依赖障碍</a>。我将在以后的文章中进一步描述。</p>
+<p>如果你有兴趣CPU在引擎盖下是如何工作 - 比如存储的缓冲区，高速缓存一致性协议和其他硬件实现细节-为什么他们首先执行内存重新排序，我推荐Paul McKenney &amp; David Howells的<a href="http://www.kernel.org/doc/Documentation/memory-barriers.txt" target="_blank" rel="noopener">优秀成果</a>。的确，我怀疑大多数成功编写了无锁代码的程序员都至少对这种硬件细节有一定的了解。</p>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束------</div>
+    
+</div>
+
+      
+    </div>
+
+    
+
+    
+    
+      
+        <div>
+          <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>赞赏此文？求鼓励，求支持！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="Jiang.G.F 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Jiang.G.F 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+        </div>
+      
+    
+
+    
+    
+      
+        <div>
+              
+<!-- JS库 clipboard 拷贝内容到粘贴板-->
+<script src="https://cdn.bootcss.com/clipboard.js/2.0.1/clipboard.min.js"></script>
+
+<!-- JS库 sweetalert 显示提示信息-->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<ul class="post-copyright">
+
+  <!-- 本文标题 -->
+  <li>
+    <strong>本文标题： </strong>
+    内存屏障就像源码控制操作一样
+  </li>
+
+  <!-- 本文作者 -->
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>
+    Jiang.G.F
+  </li>
+
+  <!-- 创建时间 -->
+  <li>
+    <strong>创建于： </strong>
+    2020年02月16日 - 23时02分
+  </li>
+
+  <!-- 修改时间 -->
+  <li>
+    <strong>更新于： </strong>
+    2020年03月03日 - 11时03分
+  </li>
+
+  <!-- 引用链接 -->
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://gfjiangly.github.io/cpu_parallel/memory_fence.html" title="内存屏障就像源码控制操作一样">https://gfjiangly.github.io/cpu_parallel/memory_fence.html</a>
+    <span class="copy-path" title="点击复制引用链接"><i style="cursor: pointer" class="fa fa-clipboard" data-clipboard-text="['s Blog | 内存屏障就像源码控制操作一样](https://gfjiangly.github.io/cpu_parallel/memory_fence.html)" aria-label="post.copy_success"></i></span>
+  </li>
+
+  <!-- 版权声明 -->
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+<script>
+  var clipboard = new ClipboardJS('.fa-clipboard');
+  clipboard.on('success', function(target){
+    var message = document.createElement('div');
+    message.innerHTML = '<i class="fa fa-check-circle message-icon"></i><span class="message-content">' + target.trigger.getAttribute('aria-label') + '</span>';
+    swal({
+      content: message,
+      className: "copy-success-message",
+      timer: 1000,
+      button: false
+    });
+  });
+</script>
+
+        </div>
+      
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/多线程/" rel="tag"># 多线程</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/cpu_parallel/memory_barrier.html" rel="next" title="多线程之内存屏障">
+                <i class="fa fa-chevron-left"></i> 多线程之内存屏障
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/cpu_parallel/acquire_fence_and_release_fence.html" rel="prev" title="获取和释放屏障">
+                获取和释放屏障 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/gfjiang_avatar.gif" alt="Jiang.G.F">
+            
+              <p class="site-author-name" itemprop="name">Jiang.G.F</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">51</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/gfjiangly" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:gfjiangly@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#内存屏障的类型"><span class="nav-number">1.</span> <span class="nav-text">内存屏障的类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LoadLoad"><span class="nav-number">1.1.</span> <span class="nav-text">#LoadLoad</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#StoreStore"><span class="nav-number">1.2.</span> <span class="nav-text">#StoreStore</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LoadStore"><span class="nav-number">1.3.</span> <span class="nav-text">#LoadStore</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#StoreLoad"><span class="nav-number">1.4.</span> <span class="nav-text">#StoreLoad</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#这个比喻能带您到多远？"><span class="nav-number">2.</span> <span class="nav-text">这个比喻能带您到多远？</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jiang.G.F</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'zMKecR0OhkAOcqW1Pi1oArHR-gzGzoHsz',
+        appKey: 'ghJoqiN9QHzKksJs7nkkqO39',
+        placeholder: '快来评论一个吧~',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <!-- 代码块复制功能 -->
+  <script type="text/javascript" src="/js/src/clipboard.min.js"></script>
+  <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+</body>
+</html>

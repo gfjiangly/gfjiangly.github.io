@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="多线程,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="翻译自：https://preshing.com/20130618/atomic-vs-non-atomic-operations/ 略有删改  关于Web上原子操作的知识已经很多，通常集中在原子读-修改-写（RMW）操作上。但是，这些并不是原子操作的唯一种类。还有原子加载和存储，它们同样重要。在这篇文章中，我将在处理器级别和C / C ++语言级别比较原子加载和存储与它们的非原子操作。在此过程">
+<meta name="keywords" content="多线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="原子操作和非原子操作">
+<meta property="og:url" content="https://gfjiangly.github.io/cpu_parallel/atomic-vs-non-atomic-operations.html">
+<meta property="og:site_name" content="jiang">
+<meta property="og:description" content="翻译自：https://preshing.com/20130618/atomic-vs-non-atomic-operations/ 略有删改  关于Web上原子操作的知识已经很多，通常集中在原子读-修改-写（RMW）操作上。但是，这些并不是原子操作的唯一种类。还有原子加载和存储，它们同样重要。在这篇文章中，我将在处理器级别和C / C ++语言级别比较原子加载和存储与它们的非原子操作。在此过程">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://gfjiangly.github.io/images/nonatomic.png">
+<meta property="og:image" content="https://gfjiangly.github.io/images/load_store_x86.png">
+<meta property="og:image" content="https://gfjiangly.github.io/images/force_fail.png">
+<meta property="og:image" content="https://gfjiangly.github.io/images/slot-machines.png">
+<meta property="og:updated_time" content="2020-03-03T11:46:36.005Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="原子操作和非原子操作">
+<meta name="twitter:description" content="翻译自：https://preshing.com/20130618/atomic-vs-non-atomic-operations/ 略有删改  关于Web上原子操作的知识已经很多，通常集中在原子读-修改-写（RMW）操作上。但是，这些并不是原子操作的唯一种类。还有原子加载和存储，它们同样重要。在这篇文章中，我将在处理器级别和C / C ++语言级别比较原子加载和存储与它们的非原子操作。在此过程">
+<meta name="twitter:image" content="https://gfjiangly.github.io/images/nonatomic.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://gfjiangly.github.io/cpu_parallel/atomic-vs-non-atomic-operations.html">
+
+
+
+
+
+  <title>原子操作和非原子操作 | jiang</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">jiang</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">工具就是生产力</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-photos">
+          <a href="/photos/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-image"></i> <br>
+            
+            相册
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://gfjiangly.github.io/cpu_parallel/atomic-vs-non-atomic-operations.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jiang.G.F">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/gfjiang_avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="jiang">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">原子操作和非原子操作</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-16T23:30:00+00:00">
+                2020-02-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/多线程/" itemprop="url" rel="index">
+                    <span itemprop="name">多线程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/cpu_parallel/atomic-vs-non-atomic-operations.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/cpu_parallel/atomic-vs-non-atomic-operations.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>翻译自：<a href="https://preshing.com/20130618/atomic-vs-non-atomic-operations/" target="_blank" rel="noopener">https://preshing.com/20130618/atomic-vs-non-atomic-operations/</a></p>
+<p>略有删改</p>
+</blockquote>
+<p>关于Web上原子操作的知识已经很多，通常集中在<a href="http://preshing.com/20150402/you-can-do-any-kind-of-atomic-read-modify-write-operation" target="_blank" rel="noopener">原子读-修改-写（RMW）</a>操作上。但是，这些并不是原子操作的唯一种类。还有原子加载和存储，它们同样重要。在这篇文章中，我将在处理器级别和C / C ++语言级别比较原子加载和存储与它们的非原子操作。在此过程中，我们将阐明C ++ 11的“数据竞争”概念。</p>
+<p><img src="/images/nonatomic.png" alt="img"></p>
+<p>如果共享内存相对于其他线程在单个步骤中完成，则该操作是<strong>原子的</strong>。在共享变量上执行原子存储时，没有其他线程可以观察到修改是半完成的。对共享变量执行原子加载时，它将读取单个时间点出现的<strong>整个值</strong>。非原子加载和存储不做那些保证。</p>
+<p>没有这些保证，<a href="http://preshing.com/20120612/an-introduction-to-lock-free-programming" target="_blank" rel="noopener">无锁编程</a>将是不可能的，因为您永远无法让不同的线程同时操作共享变量。我们可以将其公式化为：</p>
+<blockquote>
+<p>每当两个线程同时对共享变量执行操作，并且其中一个操作执行写操作时，两个线程都<strong>必须</strong>使用原子操作。</p>
+</blockquote>
+<p>如果您违反了此规则，并且任一线程使用了非原子操作，那么您将拥有C ++ 11标准所指的<strong>数据竞争</strong>（不要与Java的数据竞争概念相混淆，或更一般的<a href="http://en.wikipedia.org/wiki/Race_condition" target="_blank" rel="noopener">竞争条件</a>）。C ++ 11标准没有告诉您为什么数据竞争很糟糕。当您仅拥有一个时，才会导致“未定义的行为”（第<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3337.pdf" target="_blank" rel="noopener">1.10.21节</a>）。此类数据竞争不佳的真正原因实际上很简单：它们导致读取和写入中断。</p>
+<p>内存操作可能是非原子的，因为它使用了多个CPU指令，甚至在使用单个CPU指令时也有可能是非原子的，或许因为您正在编写可移植的代码，而根本无法做出某些操作是原子的假设。让我们看几个例子。</p>
+<h2 id="由于多个CPU指令而导致非原子"><a href="#由于多个CPU指令而导致非原子" class="headerlink" title="由于多个CPU指令而导致非原子"></a>由于多个CPU指令而导致非原子</h2><p>假设您有一个64位的全局变量，初值为零。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">uint64_t</span> sharedValue = <span class="number">0</span> ;</span><br></pre></td></tr></table></figure>
+
+<p>在某个时候，您可以为该变量分配一个64位值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">storeValue</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    sharedValue = <span class="number">0x100000002</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用GCC为32位x86平台编译此函数时，它将生成以下机器代码。</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ gcc -O2 -S -masm=intel <span class="keyword">test</span>.c</span><br><span class="line">$ cat <span class="keyword">test</span>.s</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">mov</span>	<span class="built_in">DWORD</span> <span class="built_in">PTR</span> sharedValue, <span class="number">2</span></span><br><span class="line">        <span class="keyword">mov</span>	<span class="built_in">DWORD</span> <span class="built_in">PTR</span> sharedValue+<span class="number">4</span>, <span class="number">1</span></span><br><span class="line">        <span class="keyword">ret</span></span><br><span class="line">        ...</span><br></pre></td></tr></table></figure>
+
+<p>如您所见，编译器使用两条单独的机器指令实现了64位分配。第一条指令将低32位设置为<code>0x00000002</code>，第二条指令将高32位设置为<code>0x00000001</code>。显然，此分配操作不是原子的。如果<code>sharedValue</code>被不同线程并发访问，则可能会出错：</p>
+<ul>
+<li>如果<code>storeValue</code>在两个机器指令之间抢占了一个线程调用，它将<code>0x0000000000000002</code>保留在内存中 – <strong>损坏的write</strong>。在这一点上，如果另一个线程读取<code>sharedValue</code>，它将收到这个完全错误的值。（PS：读错误）</li>
+<li>更糟糕的是，如果在两个指令之间抢占了一个线程，而另一个线程<code>sharedValue</code>在第一个线程恢复之前进行了修改，则将导致永久性的写入中断：一个线程的高32位，另一个线程的低32位。（PS：写错误）</li>
+<li>在多核设备上，甚至没有必要抢占其中一个线程来进行写入中断。当线程调用时<code>storeValue</code>，<code>sharedValue</code>在另一半内核上执行的任何线程都可以在只有一半更改可见的时候读取。（PS：此处并不是讨论私有缓存与全局内存不一致问题，因此已经限制在读写共享变量，此时讨论的是两个线程在两个核心上真正同时访问一个数据，数据一半的读写交错）</li>
+</ul>
+<p>并发读<code>sharedValue</code>会带来一系列问题：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">uint64_t</span> loadValue()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> sharedValue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$ gcc -O2 -S -masm=intel test.c</span><br><span class="line">$ cat test.s</span><br><span class="line">        ...</span><br><span class="line">        mov	eax, DWORD PTR sharedValue</span><br><span class="line">        mov	edx, DWORD PTR sharedValue+<span class="number">4</span></span><br><span class="line">        ret</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure>
+
+<p>在这里，编译器也使用两条机器指令来实现装入操作：第一条将低32位读入<code>eax</code>，第二条将高32位读入<code>edx</code>。在这种情况下，如果<code>sharedValue</code>在两个指令之间可以看到并发存储，则即使并发存储是原子的，也会导致<strong>读取</strong>中断。</p>
+<p>这些问题不仅仅是理论上的。<a href="http://mintomic.github.io/" target="_blank" rel="noopener">Mintomic</a>的测试套件包括一个称为的测试用例<code>test_load_store_64_fail</code>，其中一个线程使用普通分配运算符将一堆64位值存储到单个变量，而另一个线程从同一变量重复执行普通加载，从而验证每个结果。如预期的那样，在多核x86上，该测试始终失败。</p>
+<p><img src="/images/load_store_x86.png" alt="img"></p>
+<h2 id="非原子CPU指令"><a href="#非原子CPU指令" class="headerlink" title="非原子CPU指令"></a>非原子CPU指令</h2><p>即使通过单个CPU指令执行存储操作，也可以是非原子操作。例如，ARMv7指令集包括该<code>strd</code>指令，该指令将两个32位源寄存器的内容存储到内存中的单个64位值。</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">strd </span><span class="built_in">r0</span>, <span class="built_in">r1</span>, [<span class="built_in">r2</span>]</span><br></pre></td></tr></table></figure>
+
+<p>在某些ARMv7处理器上，该指令不是原子的。当处理器看到此指令时，实际上在<a href="http://web.eecs.umich.edu/~prabal/teaching/eecs373-f10/readings/ARMv7-M_ARM.pdf" target="_blank" rel="noopener">后台</a>执行了<em>两个<em>单独的32位存储（第<a href="http://web.eecs.umich.edu/~prabal/teaching/eecs373-f10/readings/ARMv7-M_ARM.pdf" target="_blank" rel="noopener">A3.5.3节</a>）。同样，在单独内核上运行的另一个线程可能会观察到写入中断。有趣的是，甚至在单核设备上也可能发生写入中断：实际上</em>，*在两个内部的32位存储器 *之间</em> 可能会发生系统中断（例如，计划的线程上下文切换）！在这种情况下，当线程从中断中恢复时，它将<code>strd</code>再次重新启动指令。</p>
+<p>再举一个例子，众所周知，在x86上，<code>mov</code>如果内存操作数是自然对齐的，则32位指令是原子的，否则是非原子的。换句话说，仅当32位整数位于4的精确倍数的地址上时，原子性才得到<code>test_load_store_32_fail</code>保证。如本文所述，该测试始终在x86上成功，但是如果您修改测试以强制<code>sharedInt</code>使用某些未对齐的地址，它将失败。在我的Core 2 Quad Q6600上，<code>sharedInt</code>超过缓存行边界时测试失败：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 强制sharedInt越过缓存行边界：</span></span><br><span class="line"><span class="comment">// Force sharedInt to cross a cache line boundary:</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(2)</span></span><br><span class="line">MINT_DECL_ALIGNED(<span class="keyword">static</span> struct, <span class="number">64</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">char</span> padding[<span class="number">62</span>];</span><br><span class="line">    <span class="keyword">mint_atomic32_t</span> sharedInt;</span><br><span class="line">&#125;</span><br><span class="line">g_wrapper;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/force_fail.png" alt="img"></p>
+<p>到目前为止，这些信息已经足够了特定于处理器的细节。让我们在C / C ++语言级别上查看原子性。</p>
+<h2 id="假定所有C-C-操作都是非原子的"><a href="#假定所有C-C-操作都是非原子的" class="headerlink" title="假定所有C / C ++操作都是非原子的"></a>假定所有C / C ++操作都是非原子的</h2><p>在C和C ++中，除非编译器或硬件供应商另行指定，否则所有操作都假定为非原子操作-甚至是纯32位整数分配。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">uint32_t</span> foo = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">storeFoo</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    foo = <span class="number">0x80286</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这种情况下，语言标准没有明确指出是否是原子的。也许整数赋值是原子的，也许不是。由于非原子操作不做任何保证，因此按定义，C语言中的纯整数赋值是非原子的。</p>
+<p>实际上，我们通常对目标平台了解更多。例如，众所周知，在所有现代x86，x64，Itanium，SPARC，ARM和PowerPC处理器上，只要目标变量自然对齐，纯32位整数分配<em>就是</em>原子的。您可以通过查阅处理器手册和/或编译器文档来进行验证。在游戏行业中，我可以告诉您，很多32位整数分配都依赖于此特定保证。</p>
+<p>但是，在编写真正可移植的C和C ++时，有一个长期的传统，即我们假装除语言标准告诉我们的内容外，一无所知。可移植的C和C ++旨在：在过去、现在和未来的所有可能的计算设备上运行。就个人而言，我想像一台机器，只有先将其混合才能更改内存：</p>
+<p><img src="/images/slot-machines.png" alt="img"></p>
+<p>在这样的机器上，您绝对不希望与普通分配同时执行并发读取。您可能最终会读取完全随机的值。</p>
+<p>在C ++ 11中，终于有了一种执行真正可移植的原子加载和存储的方法：C ++ 11原子库。使用C ++ 11原子库执行的原子加载和存储甚至可以在上述虚拟计算机上工作-即使这意味着C ++ 11原子库必须秘密锁定互斥体才能使每个操作原子化。还有我<a href="http://preshing.com/20130505/introducing-mintomic-a-small-portable-lock-free-api" target="_blank" rel="noopener">上个月发布</a>的<a href="http://mintomic.github.io/" target="_blank" rel="noopener">Mintomic</a>库，该库不支持那么多平台，但是可以在多个较旧的编译器上运行，经过手动优化，并且保证没有锁。</p>
+<h2 id="松的原子操作"><a href="#松的原子操作" class="headerlink" title="松的原子操作"></a>松的原子操作</h2><p>让我们回到本文<code>sharedValue</code>前面的原始示例。我们将使用Mintomic对其进行重写，以便在Mintomic支持的每个平台上原子地执行所有操作。首先，我们必须将声明<code>sharedValue</code>为Mintomic的<a href="http://mintomic.github.io/lock-free/atomics/" target="_blank" rel="noopener">原子数据类型之一</a>。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;mintomic/mintomic.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">mint_atomic64_t</span> sharedValue = &#123; <span class="number">0</span> &#125;;</span><br></pre></td></tr></table></figure>
+
+<p>该<code>mint_atomic64_t</code>类型保证在每个平台上进行原子访问时都可以正确对齐内存。这很重要，因为例如，与Xcode 3.2.5捆绑在一起的用于ARM的GCC 4.2编译器不能保证朴素的<code>uint64_t</code>将以8字节对齐。</p>
+<p>在<code>storeValue</code>中，我们必须调用<code>mint_store_64_relaxed</code>，而不是执行简单的非原子赋值。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">storeValue</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    mint_store_64_relaxed(&amp;sharedValue, <span class="number">0x100000002</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同样，在<code>loadValue</code>中，我们调用<code>mint_load_64_relaxed</code>。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">uint64_t</span> loadValue()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> mint_load_64_relaxed(&amp;sharedValue);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用C ++ 11的术语，这些函数现在无数据竞争。并行执行时，无论代码是在ARMv6 / ARMv7（Thumb或ARM模式），x86，x64还是PowerPC上运行，读取或写入都绝对不会被破坏。<code>mint_load_64_relaxed</code>以及<code>mint_store_64_relaxed</code>这两个函数都可以扩展为<code>cmpxchg8b</code>x86上的内联指令。对于其他平台，请咨询Mintomic的<a href="https://github.com/mintomic/mintomic/tree/master/include/mintomic/private" target="_blank" rel="noopener">实现</a>。</p>
+<p>这是用C ++ 11编写的完全相同的东西：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;atomic&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="built_in">std</span>::atomic&lt;<span class="keyword">uint64_t</span>&gt; sharedValue(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">storeValue</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    sharedValue.store(<span class="number">0x100000002</span>, <span class="built_in">std</span>::memory_order_relaxed);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">uint64_t</span> loadValue()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> sharedValue.load(<span class="built_in">std</span>::memory_order_relaxed);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>您会注意到，由<code>_relaxed</code>各种标识符的后缀证明，Mintomic和C ++ 11示例都使用了<code>relaxed</code>原子。该<code>_relaxed</code>后缀是一个提醒：几乎没有关于内存排列顺序的保证。</p>
+<p>特别地，由于<a href="http://preshing.com/20120625/memory-ordering-at-compile-time" target="_blank" rel="noopener">编译器的重排列</a>或处理器自身的<a href="http://preshing.com/20120710/memory-barriers-are-like-source-control-operations" target="_blank" rel="noopener">内存重排列</a>，将<code>relaxed</code>原子操作重排列在程序顺序之前或之后仍然是合法的。就像非原子操作一样，编译器甚至可以对冗余的<code>relaxed</code>原子操作执行优化。在所有情况下，该操作仍然是原子的。</p>
+<p>当同时操作共享内存时，我认为最好始终使用Mintomic或C ++ 11原子库函数，即使在您知道目标平台上已经是原子加载或存储的情况下，也是如此。原子库函数提醒我们，在其他地方，此变量被并发访问。</p>
+<p>希望现在已经更加清楚了，为什么<a href="http://preshing.com/20130605/the-worlds-simplest-lock-free-hash-table" target="_blank" rel="noopener">世界上最简单的无锁哈希表</a>使用Mintomic库函数来同时操作来自不同线程的共享内存。</p>
+<p>PS：</p>
+<h3 id="硬件支持"><a href="#硬件支持" class="headerlink" title="硬件支持"></a>硬件支持</h3><p>原子性不可能由软件单独保证–必须需要硬件的支持，因此是和架构相关的。<strong>在x86 平台上，CPU提供了在指令执行期间对总线加锁的手段</strong>。CPU芯片上有一条引线#HLOCK pin，如果汇编语言的程序中在一条指令前面加上前缀”LOCK”，经过汇编以后的机器代码就使CPU在执行这条指令的时候把#HLOCK pin的电位拉低，持续到这条指令结束时放开，从而把总线锁住，这样同一总线上别的CPU就暂时不能通过总线访问内存了，保证了这条指令在多处理器环境中的原子性。</p>
+<p>原子操作大部分使用汇编语言实现，因为C语言（或其它高级语言）并不能实现这样的操作。</p>
+<h3 id="意义"><a href="#意义" class="headerlink" title="意义"></a>意义</h3><p>在多线程访问共享资源时，能够确保所有其他的线程都不在同一时间内访问相同的资源。原子操作（atomic operation）是不需要<code>synchronized-with</code>的。</p>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束------</div>
+    
+</div>
+
+      
+    </div>
+
+    
+
+    
+    
+      
+        <div>
+          <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>赞赏此文？求鼓励，求支持！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="Jiang.G.F 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Jiang.G.F 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+        </div>
+      
+    
+
+    
+    
+      
+        <div>
+              
+<!-- JS库 clipboard 拷贝内容到粘贴板-->
+<script src="https://cdn.bootcss.com/clipboard.js/2.0.1/clipboard.min.js"></script>
+
+<!-- JS库 sweetalert 显示提示信息-->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<ul class="post-copyright">
+
+  <!-- 本文标题 -->
+  <li>
+    <strong>本文标题： </strong>
+    原子操作和非原子操作
+  </li>
+
+  <!-- 本文作者 -->
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>
+    Jiang.G.F
+  </li>
+
+  <!-- 创建时间 -->
+  <li>
+    <strong>创建于： </strong>
+    2020年02月16日 - 23时02分
+  </li>
+
+  <!-- 修改时间 -->
+  <li>
+    <strong>更新于： </strong>
+    2020年03月03日 - 11时03分
+  </li>
+
+  <!-- 引用链接 -->
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://gfjiangly.github.io/cpu_parallel/atomic-vs-non-atomic-operations.html" title="原子操作和非原子操作">https://gfjiangly.github.io/cpu_parallel/atomic-vs-non-atomic-operations.html</a>
+    <span class="copy-path" title="点击复制引用链接"><i style="cursor: pointer" class="fa fa-clipboard" data-clipboard-text="['s Blog | 原子操作和非原子操作](https://gfjiangly.github.io/cpu_parallel/atomic-vs-non-atomic-operations.html)" aria-label="post.copy_success"></i></span>
+  </li>
+
+  <!-- 版权声明 -->
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+<script>
+  var clipboard = new ClipboardJS('.fa-clipboard');
+  clipboard.on('success', function(target){
+    var message = document.createElement('div');
+    message.innerHTML = '<i class="fa fa-check-circle message-icon"></i><span class="message-content">' + target.trigger.getAttribute('aria-label') + '</span>';
+    swal({
+      content: message,
+      className: "copy-success-message",
+      timer: 1000,
+      button: false
+    });
+  });
+</script>
+
+        </div>
+      
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/多线程/" rel="tag"># 多线程</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/cpu_parallel/acquire_and_release_semantics.html" rel="next" title="acquire和release语意">
+                <i class="fa fa-chevron-left"></i> acquire和release语意
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/cpu_parallel/you-can-do-any-kind-of-atomic-read-modify-write-operation.html" rel="prev" title="你可以做任何类型的原子RMW操作">
+                你可以做任何类型的原子RMW操作 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/gfjiang_avatar.gif" alt="Jiang.G.F">
+            
+              <p class="site-author-name" itemprop="name">Jiang.G.F</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">51</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/gfjiangly" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:gfjiangly@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#由于多个CPU指令而导致非原子"><span class="nav-number">1.</span> <span class="nav-text">由于多个CPU指令而导致非原子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非原子CPU指令"><span class="nav-number">2.</span> <span class="nav-text">非原子CPU指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#假定所有C-C-操作都是非原子的"><span class="nav-number">3.</span> <span class="nav-text">假定所有C / C ++操作都是非原子的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#松的原子操作"><span class="nav-number">4.</span> <span class="nav-text">松的原子操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#硬件支持"><span class="nav-number">4.1.</span> <span class="nav-text">硬件支持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#意义"><span class="nav-number">4.2.</span> <span class="nav-text">意义</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jiang.G.F</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'zMKecR0OhkAOcqW1Pi1oArHR-gzGzoHsz',
+        appKey: 'ghJoqiN9QHzKksJs7nkkqO39',
+        placeholder: '快来评论一个吧~',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <!-- 代码块复制功能 -->
+  <script type="text/javascript" src="/js/src/clipboard.min.js"></script>
+  <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+</body>
+</html>

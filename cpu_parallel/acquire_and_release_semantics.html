@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="多线程,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="翻译自：https://preshing.com/20120913/acquire-and-release-semantics/ 略有删改  一般而言，在无锁编程中，线程可以通过两种方式操纵共享内存：  相互竞争资源 将信息从一个线程传递到另一个线程。  获取和释放语义对于后者至关重要：在线程之间可靠地传递信息。实际上，我敢冒险猜测不正确或丢失的获取和释放语义是无锁编程错误的第一类型。 在本文中">
+<meta name="keywords" content="多线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="acquire和release语意">
+<meta property="og:url" content="https://gfjiangly.github.io/cpu_parallel/acquire_and_release_semantics.html">
+<meta property="og:site_name" content="jiang">
+<meta property="og:description" content="翻译自：https://preshing.com/20120913/acquire-and-release-semantics/ 略有删改  一般而言，在无锁编程中，线程可以通过两种方式操纵共享内存：  相互竞争资源 将信息从一个线程传递到另一个线程。  获取和释放语义对于后者至关重要：在线程之间可靠地传递信息。实际上，我敢冒险猜测不正确或丢失的获取和释放语义是无锁编程错误的第一类型。 在本文中">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://gfjiangly.github.io/images/read-acquire.png">
+<meta property="og:image" content="https://gfjiangly.github.io/images/write-release.png">
+<meta property="og:image" content="https://gfjiangly.github.io/images/acq-rel-barriers.png">
+<meta property="og:image" content="https://gfjiangly.github.io/images/platform-fences.png">
+<meta property="og:image" content="https://gfjiangly.github.io/images/cpp11-fences.png">
+<meta property="og:image" content="https://gfjiangly.github.io/images/cpp11-no-fences.png">
+<meta property="og:image" content="https://gfjiangly.github.io/images/acq-rel-lock.png">
+<meta property="og:updated_time" content="2020-03-03T11:46:36.005Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="acquire和release语意">
+<meta name="twitter:description" content="翻译自：https://preshing.com/20120913/acquire-and-release-semantics/ 略有删改  一般而言，在无锁编程中，线程可以通过两种方式操纵共享内存：  相互竞争资源 将信息从一个线程传递到另一个线程。  获取和释放语义对于后者至关重要：在线程之间可靠地传递信息。实际上，我敢冒险猜测不正确或丢失的获取和释放语义是无锁编程错误的第一类型。 在本文中">
+<meta name="twitter:image" content="https://gfjiangly.github.io/images/read-acquire.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://gfjiangly.github.io/cpu_parallel/acquire_and_release_semantics.html">
+
+
+
+
+
+  <title>acquire和release语意 | jiang</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">jiang</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">工具就是生产力</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-photos">
+          <a href="/photos/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-image"></i> <br>
+            
+            相册
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://gfjiangly.github.io/cpu_parallel/acquire_and_release_semantics.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jiang.G.F">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/gfjiang_avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="jiang">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">acquire和release语意</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-16T23:27:00+00:00">
+                2020-02-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/多线程/" itemprop="url" rel="index">
+                    <span itemprop="name">多线程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/cpu_parallel/acquire_and_release_semantics.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/cpu_parallel/acquire_and_release_semantics.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>翻译自：<a href="https://preshing.com/20120913/acquire-and-release-semantics/" target="_blank" rel="noopener">https://preshing.com/20120913/acquire-and-release-semantics/</a></p>
+<p>略有删改</p>
+</blockquote>
+<p>一般而言，在<a href="http://preshing.com/20120612/an-introduction-to-lock-free-programming" target="_blank" rel="noopener">无锁编程</a>中，线程可以通过两种方式操纵共享内存：</p>
+<ol>
+<li>相互竞争资源</li>
+<li>将信息从一个线程传递到另一个线程。</li>
+</ol>
+<p>获取和释放语义对于后者至关重要：在线程之间可靠地传递信息。实际上，我敢冒险猜测不正确或丢失的获取和释放语义是无锁编程错误的第一类型。</p>
+<p>在本文中，我将演示在C ++中实现获取和释放语义的各种方法。我将以介绍性的方式介绍C ++ 11 <code>atomic</code>库标准，因此您无需了解它。从一开始就很清楚，这里的信息适用于<em>没有</em> <a href="http://preshing.com/20120612/an-introduction-to-lock-free-programming#sequential-consistency" target="_blank" rel="noopener">顺序一致性的</a><em>无</em>锁编程。我们直接在多核或多处理器环境中处理内存排序。</p>
+<p>不幸的是，术语 <em>acquire and release semantics</em> 似乎比术语 <em>lock-free</em> 更乱，因为您搜索网络的次数越多，您会发现看似矛盾的定义。布鲁斯·道森（Bruce Dawson）在本<a href="http://msdn.microsoft.com/en-us/library/windows/desktop/ee418650.aspx" target="_blank" rel="noopener">白皮书</a>的一半左右位置提供了两个很好的定义（归功于Herb Sutter）。我想提供一些我自己的定义，以接近C ++ 11 <code>atomic</code>背后的原理：</p>
+<blockquote>
+<p><img src="/images/read-acquire.png" alt="img"></p>
+<p><strong>获取语义</strong>是仅适用于从共享内存<strong>读取</strong>的操作的属性，无论它们是<a href="http://preshing.com/20120612/an-introduction-to-lock-free-programming#atomic-rmw" target="_blank" rel="noopener">读-修改-写</a>操作还是普通加载。然后将该操作视为<strong>已读取</strong>。获取语义防止在它<strong>之后</strong>的任何读写操作的内存重新排序到<em>read-acquire</em>的前面。</p>
+</blockquote>
+<blockquote>
+<p><img src="/images/write-release.png" alt="img"></p>
+<p><strong>释放语义</strong>是仅适用于<strong>写入</strong>共享内存的操作的属性，无论它们是读-修改-写操作还是普通存储。然后将该操作视为<strong>已写入</strong>。释放语义防止在它<strong>之前</strong>的任何读写操作的内存重新排列到write-release的后面。</p>
+</blockquote>
+<p>一旦理解了上面的定义，就不难发现使用我<a href="http://preshing.com/20120710/memory-barriers-are-like-source-control-operations" target="_blank" rel="noopener">在上一篇文章中详细描述</a>的内存屏障类型的简单组合就可以实现获取和释放语义。必须（以某种方式）将屏障放置在读获取操作之后，但在写入释放之前。<em>[更新：请注意，在单个内存操作的技术上，这些屏障比获取和释放语义所要求的更为严格，但它们确实达到了预期的效果。]</em></p>
+<p><img src="/images/acq-rel-barriers.png" alt="img"></p>
+<p>很棒的是获取或释放语义都不需要使用<code>#StoreLoad</code>屏障，这个屏障通常是更昂贵的内存屏障类型。例如，在PowerPC，所述<code>lwsync</code>（简称“轻量同步”）指令同时扮演<code>#LoadLoad</code>，<code>#LoadStore</code>和<code>#StoreStore</code>三个障碍的角色，比包含<code>#StoreLoad</code>屏障的<code>sync</code>指令更轻量。</p>
+<h2 id="显示使用平台相关的屏障"><a href="#显示使用平台相关的屏障" class="headerlink" title="显示使用平台相关的屏障"></a>显示使用平台相关的屏障</h2><p>获得期望的内存屏障的一种方法是发出明确的屏障指令。让我们从一个简单的例子开始。假设我们正在为PowerPC进行编码，并且<code>__lwsync()</code>是发出<code>lwsync</code>指令的编译器固有函数。由于<code>lwsync</code>提供了许多屏障类型，因此我们可以在以下代码中使用它来根据需要建立获取或释放语义。在线程1中，存储<code>Ready</code>变为写释放，而在线程2中，来自的负载<code>Ready</code>变为读取获取。</p>
+<p><img src="/images/platform-fences.png" alt="img"></p>
+<p>如果我们让两个线程都运行，并找到<code>r1 == 1</code>，则可以确认在线程1中赋给A的值已成功传递给线程2。因此，我们可以保证<code>r2 == 42</code>。在我以前的帖子，我已经<a href="http://preshing.com/20120710/memory-barriers-are-like-source-control-operations" target="_blank" rel="noopener">给了一个漫长的比喻</a>为说明<code>#LoadLoad</code>和<code>#StoreStore</code>如何工作的，所以我不会在这里老调重弹这个解释。</p>
+<p>用正式的术语来说，我们说<code>Ready</code> 的存储<em>与</em> 加载<em>同步<em>。另外，我在<a href="http://preshing.com/20130823/the-synchronizes-with-relation" target="_blank" rel="noopener">此处</a>单独写了一篇关于</em>synchronizes-with</em> 的文章 。到目前为止，足以说这种技术正常工作，获取和释放语义必须应用于同一变量。在这个例子中，<code>Ready</code>和存储和加载必须都是原子操作。这里<code>Ready</code>与<code>int</code>简单对齐 ，操作在PowerPC上已经是原子的。</p>
+<h2 id="在可移植C-11中使用屏障"><a href="#在可移植C-11中使用屏障" class="headerlink" title="在可移植C ++ 11中使用屏障"></a>在可移植C ++ 11中使用屏障</h2><p>上面的示例是特定于编译器和处理器的。支持多种平台的一种方法是将代码转换为C ++ 11。所有C ++ 11标识符都存在于<code>std</code>名称空间中，因此，为了使下面的示例简短，让我们假设该语句<code>using namespace std;</code>位于代码的较早位置。</p>
+<p>C ++ 11的原子库标准定义了一个可移植函数<code>atomic_thread_fence()</code>，该函数采用单个参数来指定屏障的类型。该参数有几个可能的值，但是我们在这里最感兴趣的值是<code>memory_order_acquire</code>和<code>memory_order_release</code>。我们将使用此功能代替<code>__lwsync()</code>。</p>
+<p>在此示例完成之前，还需要进行其他更改。在PowerPC上，我们知道这两个操作<code>Ready</code>都是原子的，但是我们不能对每个平台都做此假设。为了确保所有平台上的原子性，我们将把<code>Ready</code>的类型从<code>int</code>更改为<code>atomic</code>。我知道，如果考虑对齐的<code>int</code>的加载和存储在当今存在的每个现代CPU上都是原子的，这是一个愚蠢的改变。我将在<a href="http://preshing.com/20130823/the-synchronizes-with-relation" target="_blank" rel="noopener"><em>synchronize-with</em></a>的帖子中写更多有关此的内容，但是现在，让我们为理论上100％正确的热情做此事。无需更改<code>A</code>。</p>
+<p><img src="/images/cpp11-fences.png" alt="img"></p>
+<p>上面的<code>memory_order_relaxed</code>意味着“确保这些操作是原子的，但不要强加尚不存在的任何排序约束/内存障碍。”</p>
+<p>再一次，上述两个<code>atomic_thread_fence()</code>调用在PowerPC上都可以使用<code>lwsync</code>实现。同样，在ARM上它们都可以使用<code>dmb</code>指令实现，我认为它至少与PowerPC的<code>lwsync</code>一样有效。在x86/64上，两个<code>atomic_thread_fence()</code>调用都可以简单地实现为<a href="http://preshing.com/20120625/memory-ordering-at-compile-time" target="_blank" rel="noopener">编译器障碍</a>，因为通常x86/64上的每个加载都已经隐含了获取语义，每个存储都隐含了释放语义。这就是为什么x86/64通常被认为是<a href="http://preshing.com/20120930/weak-vs-strong-memory-models" target="_blank" rel="noopener">有序的原因</a>。</p>
+<h2 id="在可移植C-11中不直接使用屏障"><a href="#在可移植C-11中不直接使用屏障" class="headerlink" title="在可移植C ++ 11中不直接使用屏障"></a>在可移植C ++ 11中不直接使用屏障</h2><p>在C ++ 11中，<code>Ready</code>无需发出显式的屏障指令就可以实现获取和释放语义。您只需要在以下操作上直接指定内存排序约束<code>Ready</code>：</p>
+<p><img src="/images/cpp11-no-fences.png" alt="img"></p>
+<p>可以将其视为将每个屏障指令滚动到<code>Ready</code>自己的操作中。*[更新：请注意，此表格与使用<a href="http://preshing.com/20131125/acquire-and-release-fences-dont-work-the-way-youd-expect" target="_blank" rel="noopener">独立屏障的版本</a>不完全相同；从技术上讲，它不太严格。]<em>编译器将发出任何必需的指令，以获得所需的屏障效果。特别是在Itanium上，每个操作都可以轻松实现为一条指令：<code>ld.acq</code>和<code>st.rel</code>。与以前一样，<code>r1 == 1</code>表示一个</em>synchronizes-with*关系，确认<code>r2 == 42</code>是对的。</p>
+<p>实际上，这是在C ++ 11中表达获取和释放语义的首选方法。实际上，<code>atomic_thread_fence()</code>在上一示例中使用的功能是在标准创建的<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2633.html" target="_blank" rel="noopener">后期</a>才添加的。</p>
+<h2 id="使用锁实现获取释放语义"><a href="#使用锁实现获取释放语义" class="headerlink" title="使用锁实现获取释放语义"></a>使用锁实现获取释放语义</h2><p>如您所见，本文中的所有示例均未利用获取和释放语义所提供的<code>#LoadStore</code>屏障。确实，只需要<code>#LoadLoad</code>和<code>#StoreStore</code>。这仅仅是因为在本文中，我选择了一个简单的示例让我们专注于API和语法。</p>
+<p><code>#LoadStore</code>变得很重要的一种情况是，使用获取和释放语义来实现(互斥)锁。实际上，这就是获取与释放语义名称的来源：获取锁意味着获取语义，而释放锁则意味着释放语义！介于两者之间的所有内存操作都包含在一个漂亮的小屏障夹中，以防止任何不希望的内存跨越边界重新排序。</p>
+<p><img src="/images/acq-rel-lock.png" alt="img"></p>
+<p>在这里，获取和释放语义可确保在持有锁的同时进行的所有修改将完全传播到获取锁的下一个线程。锁的每种实现，即使<a href="http://preshing.com/20120226/roll-your-own-lightweight-mutex" target="_blank" rel="noopener">您自己的实现</a>，也应提供这些保证。同样，这都是为在线程之间可靠地传递信息，尤其是在多核或多处理器环境中。</p>
+<p>PS：不论何种方式实现获取和释放语义，底层都是借助处理器或编译器的内存屏障指令来完成。语言层次提供的获取释放语义只是对底层指令的封装。</p>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束------</div>
+    
+</div>
+
+      
+    </div>
+
+    
+
+    
+    
+      
+        <div>
+          <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>赞赏此文？求鼓励，求支持！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="Jiang.G.F 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Jiang.G.F 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+        </div>
+      
+    
+
+    
+    
+      
+        <div>
+              
+<!-- JS库 clipboard 拷贝内容到粘贴板-->
+<script src="https://cdn.bootcss.com/clipboard.js/2.0.1/clipboard.min.js"></script>
+
+<!-- JS库 sweetalert 显示提示信息-->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<ul class="post-copyright">
+
+  <!-- 本文标题 -->
+  <li>
+    <strong>本文标题： </strong>
+    acquire和release语意
+  </li>
+
+  <!-- 本文作者 -->
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>
+    Jiang.G.F
+  </li>
+
+  <!-- 创建时间 -->
+  <li>
+    <strong>创建于： </strong>
+    2020年02月16日 - 23时02分
+  </li>
+
+  <!-- 修改时间 -->
+  <li>
+    <strong>更新于： </strong>
+    2020年03月03日 - 11时03分
+  </li>
+
+  <!-- 引用链接 -->
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://gfjiangly.github.io/cpu_parallel/acquire_and_release_semantics.html" title="acquire和release语意">https://gfjiangly.github.io/cpu_parallel/acquire_and_release_semantics.html</a>
+    <span class="copy-path" title="点击复制引用链接"><i style="cursor: pointer" class="fa fa-clipboard" data-clipboard-text="['s Blog | acquire和release语意](https://gfjiangly.github.io/cpu_parallel/acquire_and_release_semantics.html)" aria-label="post.copy_success"></i></span>
+  </li>
+
+  <!-- 版权声明 -->
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+<script>
+  var clipboard = new ClipboardJS('.fa-clipboard');
+  clipboard.on('success', function(target){
+    var message = document.createElement('div');
+    message.innerHTML = '<i class="fa fa-check-circle message-icon"></i><span class="message-content">' + target.trigger.getAttribute('aria-label') + '</span>';
+    swal({
+      content: message,
+      className: "copy-success-message",
+      timer: 1000,
+      button: false
+    });
+  });
+</script>
+
+        </div>
+      
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/多线程/" rel="tag"># 多线程</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/cpu_parallel/acquire_fence_and_release_fence.html" rel="next" title="获取和释放屏障">
+                <i class="fa fa-chevron-left"></i> 获取和释放屏障
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/cpu_parallel/atomic-vs-non-atomic-operations.html" rel="prev" title="原子操作和非原子操作">
+                原子操作和非原子操作 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/gfjiang_avatar.gif" alt="Jiang.G.F">
+            
+              <p class="site-author-name" itemprop="name">Jiang.G.F</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">51</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/gfjiangly" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:gfjiangly@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#显示使用平台相关的屏障"><span class="nav-number">1.</span> <span class="nav-text">显示使用平台相关的屏障</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在可移植C-11中使用屏障"><span class="nav-number">2.</span> <span class="nav-text">在可移植C ++ 11中使用屏障</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在可移植C-11中不直接使用屏障"><span class="nav-number">3.</span> <span class="nav-text">在可移植C ++ 11中不直接使用屏障</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用锁实现获取释放语义"><span class="nav-number">4.</span> <span class="nav-text">使用锁实现获取释放语义</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jiang.G.F</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'zMKecR0OhkAOcqW1Pi1oArHR-gzGzoHsz',
+        appKey: 'ghJoqiN9QHzKksJs7nkkqO39',
+        placeholder: '快来评论一个吧~',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <!-- 代码块复制功能 -->
+  <script type="text/javascript" src="/js/src/clipboard.min.js"></script>
+  <script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+</body>
+</html>
