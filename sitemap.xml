@@ -263,7 +263,7 @@
   </url>
   
   <url>
-    <loc>https://gfjiangly.github.io/Python/object_generate_process.html</loc>
+    <loc>https://gfjiangly.github.io/Python/numpy_conditional_filtering.html</loc>
     
     <lastmod>2026-03-03</lastmod>
     
@@ -272,7 +272,7 @@
   </url>
   
   <url>
-    <loc>https://gfjiangly.github.io/Python/numpy_conditional_filtering.html</loc>
+    <loc>https://gfjiangly.github.io/Python/object_generate_process.html</loc>
     
     <lastmod>2026-03-03</lastmod>
     
@@ -353,7 +353,7 @@
   </url>
   
   <url>
-    <loc>https://gfjiangly.github.io/Python/copy.html</loc>
+    <loc>https://gfjiangly.github.io/Python/flask_connection_error.html</loc>
     
     <lastmod>2026-03-03</lastmod>
     
@@ -362,7 +362,7 @@
   </url>
   
   <url>
-    <loc>https://gfjiangly.github.io/Python/flask_connection_error.html</loc>
+    <loc>https://gfjiangly.github.io/Python/copy.html</loc>
     
     <lastmod>2026-03-03</lastmod>
     
@@ -582,14 +582,14 @@
   </url>
   
   <url>
-    <loc>https://gfjiangly.github.io/tags/%E4%BB%A3%E7%A0%81%E6%B5%8B%E8%AF%95/</loc>
+    <loc>https://gfjiangly.github.io/tags/CICD/</loc>
     <lastmod>2026-03-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://gfjiangly.github.io/tags/CICD/</loc>
+    <loc>https://gfjiangly.github.io/tags/%E4%BB%A3%E7%A0%81%E6%B5%8B%E8%AF%95/</loc>
     <lastmod>2026-03-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -610,14 +610,14 @@
   </url>
   
   <url>
-    <loc>https://gfjiangly.github.io/tags/Docker/</loc>
+    <loc>https://gfjiangly.github.io/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/</loc>
     <lastmod>2026-03-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://gfjiangly.github.io/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/</loc>
+    <loc>https://gfjiangly.github.io/tags/Docker/</loc>
     <lastmod>2026-03-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -689,14 +689,14 @@
   </url>
   
   <url>
-    <loc>https://gfjiangly.github.io/categories/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/</loc>
+    <loc>https://gfjiangly.github.io/categories/CICD/</loc>
     <lastmod>2026-03-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://gfjiangly.github.io/categories/CICD/</loc>
+    <loc>https://gfjiangly.github.io/categories/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/</loc>
     <lastmod>2026-03-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -724,14 +724,14 @@
   </url>
   
   <url>
-    <loc>https://gfjiangly.github.io/categories/Docker/</loc>
+    <loc>https://gfjiangly.github.io/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/</loc>
     <lastmod>2026-03-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://gfjiangly.github.io/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/</loc>
+    <loc>https://gfjiangly.github.io/categories/Docker/</loc>
     <lastmod>2026-03-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
