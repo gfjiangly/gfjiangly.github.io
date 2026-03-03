@@ -1,0 +1,11 @@
+# hexo robots.txt
+User-agent: * Allow: /
+Allow: /archives/
+Allow: /about/
+Disallow: /js/
+Disallow: /css/
+Disallow: /fonts/
+Disallow: /images/
+
+Sitemap: https://gfjiangly.github.io/sitemap.xml
+Sitemap: https://gfjiangly.github.io/baidusitemap.xml
