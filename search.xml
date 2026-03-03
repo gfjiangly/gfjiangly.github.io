@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>强化学习算法对比</title>
+      <link href="/RL/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95%E5%AF%B9%E6%AF%94.html"/>
+      <url>/RL/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95%E5%AF%B9%E6%AF%94.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="DAPO-vs-GRPO"><a href="#DAPO-vs-GRPO" class="headerlink" title="DAPO vs GRPO"></a>DAPO vs GRPO</h1><p>DAPO（Decoupled Clip and Dynamic Sampling Policy Optimization）双端裁剪和动态采样策略优化<br>GRPO（Group Relative Policy Optimization）组相对策略优化</p><p>dapo相比grpo的改进:</p><ol><li>解耦剪切机制（Decoupled Clip）<ul><li>GRPO 使用对称的裁剪区间（如 [1-ε, 1+ε]）限制策略更新幅度；</li><li>DAPO 采用非对称裁剪区间（ε_low, ε_high），对正优势（advantage）Token 放宽梯度限制（允许更大幅度更新），缓解熵崩溃问题，增强探索性。</li></ul></li><li>动态采样（Dynamic Sampling）<ul><li>过滤掉 “全对” 或 “全错” 的极端样本，保留 “中等难度” 样本（即模型对部分 Token 决策存疑的样本）；</li><li>确保每个训练批次都能提供有效梯度信号，提升训练稳定性和样本效率。</li><li>相比离线过滤好处: 多轮训练时遇到之前acc=0或1的样本由于模型参数更新了，这些样本可能再次参与训练。</li></ul></li><li>Token 级策略梯度损失<ul><li>GRPO 通常采用样本级损失汇总，长响应中的 Token 贡献被稀释；</li><li>DAPO 以Token 级计算损失，赋予每个 Token 相等权重，强化长推理链中复杂模式的学习，同时抑制低质量长响应。</li></ul></li></ol><p>其他关键优化</p><ul><li>移除 KL 散度约束：允许策略分布在复杂推理任务中更大幅度偏离初始模型，提升适配性；</li><li>长度感知奖励塑形（overlong reward shaping）：针对长响应设计特殊奖励机制，降低奖励噪声对训练的干扰。</li></ul><p>veRL中GRPO实现时只有最后一个token由奖励模型分配奖励分数。DAPO是否有差别还需要再看下代码。</p><p>熵崩溃问题：策略熵在训练中发生快速、不可逆的暴跌，模型输出的 token 概率分布极度收敛，彻底丧失探索能力，最终陷入模式坍塌的现象。</p><ul><li>熵越高：token 概率分布越均匀，模型对不同 token 的选择越开放，探索能力越强；</li><li>熵越低：token 概率分布越尖峰，模型越倾向于只选概率最高的少数 token，确定性越强，探索能力越弱；</li><li>极端情况：熵趋近于 0，模型在该位置只会输出 1 个固定 token，完全失去其他选择的可能性。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> RL </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> RL </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>【PyTorch】dataset &amp; dataloader对象设计</title>
       <link href="/PyTorch/dataset_and_dataloader.html"/>
       <url>/PyTorch/dataset_and_dataloader.html</url>

@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://gfjiangly.github.io/RL/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95%E5%AF%B9%E6%AF%94.html</loc>
+    
+    <lastmod>2026-03-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://gfjiangly.github.io/hexo/Hexo-cmd.html</loc>
     
     <lastmod>2026-03-03</lastmod>
@@ -644,6 +653,13 @@
     <priority>0.2</priority>
   </url>
   
+  <url>
+    <loc>https://gfjiangly.github.io/tags/RL/</loc>
+    <lastmod>2026-03-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
 
   
   <url>
@@ -760,6 +776,13 @@
   
   <url>
     <loc>https://gfjiangly.github.io/categories/LeetCode/</loc>
+    <lastmod>2026-03-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://gfjiangly.github.io/categories/RL/</loc>
     <lastmod>2026-03-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
