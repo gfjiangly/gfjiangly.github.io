@@ -114,7 +114,7 @@
 <meta property="og:locale">
 <meta property="og:image" content="https://gfjiangly.github.io/images/ep_fsdp2.png">
 <meta property="article:published_time" content="2026-03-05T15:08:00.000Z">
-<meta property="article:modified_time" content="2026-03-05T15:51:07.487Z">
+<meta property="article:modified_time" content="2026-03-05T15:56:32.317Z">
 <meta property="article:author" content="Jiang.G.F">
 <meta property="article:tag" content="MoE">
 <meta property="article:tag" content="并行训练">
@@ -441,19 +441,19 @@
 
       
         <p>以VeOmni训练框架为例，介绍Qwen3-MoE-30B-A3B模型并行训练方法，参考代码仓库中<a href="https://github.com/ByteDance-Seed/VeOmni/blob/main/docs/key_features/ep_fsdp2.md">文档</a>。</p>
-<h2 id="Qwen3-MoE-30B-A3B模型"><a href="#Qwen3-MoE-30B-A3B模型" class="headerlink" title="Qwen3-MoE-30B-A3B模型"></a>Qwen3-MoE-30B-A3B模型</h2><p>该模型核心参数为：128 个专家、隐藏层维度 2048、中间层维度 768，其 MoE 核心的专家权重张量形状固定为：</p>
+<h1 id="Qwen3-MoE-30B-A3B模型"><a href="#Qwen3-MoE-30B-A3B模型" class="headerlink" title="Qwen3-MoE-30B-A3B模型"></a>Qwen3-MoE-30B-A3B模型</h1><p>该模型核心参数为：128 个专家、隐藏层维度 2048、中间层维度 768，其 MoE 核心的专家权重张量形状固定为：</p>
 <ul>
 <li>门控投影（Gate projection）：[128, 768, 768]</li>
 <li>上投影（Up projection）：[128, 768, 2048]</li>
 <li>下投影（Down projection）：[128, 2048, 768]</li>
 </ul>
-<h2 id="VeOmni分片维度设计"><a href="#VeOmni分片维度设计" class="headerlink" title="VeOmni分片维度设计"></a>VeOmni分片维度设计</h2><p>为了兼顾并行灵活性与训练效率，VeOmni 对 EP 和 FSDP2 做了维度解耦设计，这是整个并行方案的核心：</p>
+<h1 id="VeOmni分片维度设计"><a href="#VeOmni分片维度设计" class="headerlink" title="VeOmni分片维度设计"></a>VeOmni分片维度设计</h1><p>为了兼顾并行灵活性与训练效率，VeOmni 对 EP 和 FSDP2 做了维度解耦设计，这是整个并行方案的核心：</p>
 <ol>
 <li>专家并行（EP）：固定沿张量的dim-0（专家数量维度） 分片，将不同的专家拆分到不同的 EP 并行组中，实现专家级的分布式部署。</li>
 <li>FSDP2 全分片数据并行：针对专家模块，沿张量的dim-1 维度分片（而非 FSDP2 默认的 dim-0）；非专家模块仍沿默认维度做全局 FSDP2 分片。</li>
 </ol>
 <p>该设计的核心优势是打破了「EP 并行度 × FSDP2 并行度必须严格等于专家总数」的强约束，支持更灵活的并行度配置。</p>
-<h2 id="完整并行流程"><a href="#完整并行流程" class="headerlink" title="完整并行流程"></a>完整并行流程</h2><p>以 2 台 8-GPU 实例（总计 16 张 GPU，全局 world size=16）、配置EP size=8、FSDP2 size=16的典型场景为例，以下投影层为例，完整并行分片流程如下：</p>
+<h1 id="完整并行流程"><a href="#完整并行流程" class="headerlink" title="完整并行流程"></a>完整并行流程</h1><p>以 2 台 8-GPU 实例（总计 16 张 GPU，全局 world size=16）、配置EP size=8、FSDP2 size=16的典型场景为例，以下投影层为例，完整并行分片流程如下：</p>
 <p><img src="/images/ep_fsdp2.png" alt="img"></p>
 <ol>
 <li>第一步：EP 维度分片（专家拆分）<ul>
@@ -468,7 +468,7 @@
 </ul>
 </li>
 </ol>
-<h2 id="专家-非专家模块的并行规则差异"><a href="#专家-非专家模块的并行规则差异" class="headerlink" title="专家/非专家模块的并行规则差异"></a>专家/非专家模块的并行规则差异</h2><ol>
+<h1 id="专家-非专家模块的并行规则差异"><a href="#专家-非专家模块的并行规则差异" class="headerlink" title="专家/非专家模块的并行规则差异"></a>专家/非专家模块的并行规则差异</h1><ol>
 <li>专家模块</li>
 </ol>
 <ul>
@@ -481,7 +481,7 @@
 <ul>
 <li>不受 EP 并行影响，仅执行全局 FSDP2 分片，FSDP2 并行度 = 全局 world size。<br>设备网格：仅[FSDP]的一维设备网格，与常规 FSDP2 全分片训练逻辑一致。</li>
 </ul>
-<h2 id="为什么这么设计"><a href="#为什么这么设计" class="headerlink" title="为什么这么设计"></a>为什么这么设计</h2><p>MoE 训练有两类完全不同的核心通信，二者对效率的影响不在一个量级：</p>
+<h1 id="为什么这么设计"><a href="#为什么这么设计" class="headerlink" title="为什么这么设计"></a>为什么这么设计</h1><p>MoE 训练有两类完全不同的核心通信，二者对效率的影响不在一个量级：</p>
 <ol>
 <li><p>EP 相关通信：token 路由的AlltoAll，前向把 token 分发到对应专家的 GPU，反向回传梯度。通信量级和 batch size、序列长度正相关，是全连接集体通信，对网络延迟/带宽极度敏感，且很难和计算重叠，是 MoE 训练的头号瓶颈。</p>
 </li>
@@ -489,7 +489,7 @@
 </li>
 </ol>
 <p>我们知道不同机器节点之间的通信耗时是比较长的，而节点内通过NVLink通信耗时很短，两者相差1个数据级。因此我们将EP的并行完全限制在节点内，EP AlltoAll 仅在单节点8卡之间走低延迟高带宽的 NVLink，完全无跨节点的 AlltoAll 开销。让 FSDP 的并行跨节点，跨节点仅存在 FSDP2 的极小流量参数通信，且通过定制化预取完全隐藏在计算中，无任何空闲气泡。</p>
-<h3 id="Expert-Parallelism-Details（专家并行细节）"><a href="#Expert-Parallelism-Details（专家并行细节）" class="headerlink" title="Expert Parallelism Details（专家并行细节）"></a>Expert Parallelism Details（专家并行细节）</h3><p><strong>核心实现文件</strong><br>专家并行（EP）的核心实现逻辑位于 veomni/distributed/parallel_plan.py 文件中。</p>
+<h1 id="VeOmni并行实现细节"><a href="#VeOmni并行实现细节" class="headerlink" title="VeOmni并行实现细节"></a>VeOmni并行实现细节</h1><h2 id="Expert-Parallelism-Details（专家并行细节）"><a href="#Expert-Parallelism-Details（专家并行细节）" class="headerlink" title="Expert Parallelism Details（专家并行细节）"></a>Expert Parallelism Details（专家并行细节）</h2><p><strong>核心实现文件</strong><br>专家并行（EP）的核心实现逻辑位于 veomni/distributed/parallel_plan.py 文件中。</p>
 <p><strong>核心设计思路</strong><br>VeOmni 作为模型中心化的框架，通过注册模型定义中专家权重的「全限定名（Fully Qualified Name，FQN）」作为属性，来实现专家并行的分片逻辑（以 Qwen3-MoE 为例，可参考 veomni/models/transformers/qwen3_moe/parallel_plan.py）。</p>
 <p><strong>具体实现逻辑</strong></p>
 <ol>
@@ -508,18 +508,18 @@
 </li>
 </ol>
 <p><strong>关键特性</strong><br>该实现对终端用户完全透明，无需额外配置，框架会自动完成专家权重的 EP 分片、本地张量替换及 rank 间交互控制。</p>
-<h3 id="FSDP2-Details（FSDP2-实现细节）"><a href="#FSDP2-Details（FSDP2-实现细节）" class="headerlink" title="FSDP2 Details（FSDP2 实现细节）"></a>FSDP2 Details（FSDP2 实现细节）</h3><p>FSDP2 适配的核心实现位于 veomni/distributed/torch_parallelize.py，是 VeOmni 实现 EP+FSDP2 混合并行的核心模块，针对 MoE 模型的专家 / 非专家模块做了深度定制化适配，解决原生 FSDP2 与专家并行的兼容问题，同时最大化通信与计算的重叠效率。</p>
-<h4 id="1-自底向上的分片策略（Sharding-from-the-bottom-up）"><a href="#1-自底向上的分片策略（Sharding-from-the-bottom-up）" class="headerlink" title="1. 自底向上的分片策略（Sharding from the bottom up）"></a>1. 自底向上的分片策略（Sharding from the bottom up）</h4><p>FSDP2 的核心能力依赖 fully_shard 接口，该接口要求必须以 <strong>自底向上（可以理解成自内向外）</strong> 的层级顺序执行分片。针对 EP+FSDP2 的嵌套混合并行场景，VeOmni 设计了分层分片的执行流程，简化逻辑如下：</p>
+<h2 id="FSDP2-Details（FSDP2-实现细节）"><a href="#FSDP2-Details（FSDP2-实现细节）" class="headerlink" title="FSDP2 Details（FSDP2 实现细节）"></a>FSDP2 Details（FSDP2 实现细节）</h2><p>FSDP2 适配的核心实现位于 veomni/distributed/torch_parallelize.py，是 VeOmni 实现 EP+FSDP2 混合并行的核心模块，针对 MoE 模型的专家 / 非专家模块做了深度定制化适配，解决原生 FSDP2 与专家并行的兼容问题，同时最大化通信与计算的重叠效率。</p>
+<h3 id="1-自底向上的分片策略（Sharding-from-the-bottom-up）"><a href="#1-自底向上的分片策略（Sharding-from-the-bottom-up）" class="headerlink" title="1. 自底向上的分片策略（Sharding from the bottom up）"></a>1. 自底向上的分片策略（Sharding from the bottom up）</h3><p>FSDP2 的核心能力依赖 fully_shard 接口，该接口要求必须以 <strong>自底向上（可以理解成自内向外）</strong> 的层级顺序执行分片。针对 EP+FSDP2 的嵌套混合并行场景，VeOmni 设计了分层分片的执行流程，简化逻辑如下：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 简化的核心执行逻辑</span></span><br><span class="line"><span class="keyword">for</span> layers <span class="keyword">in</span> model:</span><br><span class="line"><span class="keyword">if</span> layers.mlp.experts:</span><br><span class="line">    <span class="comment"># 第一步：先对专家模块执行 FSDP2 分片（沿 dim-1）</span></span><br><span class="line">    <span class="comment"># 执行后，layers.mlp.experts 已被标记为“已分片”</span></span><br><span class="line">    fully_shard(layers.mlp.experts)</span><br><span class="line"><span class="comment"># 第二步：对整个 Decoder 层执行 FSDP2 分片</span></span><br><span class="line"><span class="comment"># 此时 FSDP2 会遍历 layer 的子模块，发现 layers.mlp.experts 已分片，直接跳过</span></span><br><span class="line"><span class="comment"># 仅对 layer 中未分片的部分（如注意力模块、层归一化等）执行分片</span></span><br><span class="line">fully_shard(layer)</span><br><span class="line"><span class="comment"># 第三步：对完整模型执行 FSDP2 分片</span></span><br><span class="line"><span class="comment"># 同理，已分片的 Decoder 层和专家模块都会被跳过，仅处理剩余未分片的顶层模块</span></span><br><span class="line">fully_shard(model)</span><br></pre></td></tr></table></figure>
 <p>该分层逻辑保证了专家模块的分片优先级，避免与非专家模块的分片逻辑冲突，同时兼容 EP 已完成的分片结果。</p>
-<h4 id="2-分模块的正确维度分片（Sharding-Modules-with-Correct-Dimensions）"><a href="#2-分模块的正确维度分片（Sharding-Modules-with-Correct-Dimensions）" class="headerlink" title="2. 分模块的正确维度分片（Sharding Modules with Correct Dimensions）"></a>2. 分模块的正确维度分片（Sharding Modules with Correct Dimensions）</h4><p>针对专家模块与非专家模块，VeOmni 设计了差异化的分片策略，核心设计如下：</p>
+<h3 id="2-分模块的正确维度分片（Sharding-Modules-with-Correct-Dimensions）"><a href="#2-分模块的正确维度分片（Sharding-Modules-with-Correct-Dimensions）" class="headerlink" title="2. 分模块的正确维度分片（Sharding Modules with Correct Dimensions）"></a>2. 分模块的正确维度分片（Sharding Modules with Correct Dimensions）</h3><p>针对专家模块与非专家模块，VeOmni 设计了差异化的分片策略，核心设计如下：</p>
 <ul>
 <li><p>分片维度解耦：专家模块的 EP 并行固定沿 dim-0（专家数量维度）分片，而专家模块的 FSDP2 分片沿 dim-1 执行（非 FSDP2 默认的 dim-0）。规避「EP size × FSDP2 size 必须严格等于专家总数」的强限制，提升并行配置的灵活性。</p>
 </li>
 <li><p>通用化的专家模块识别：不依赖固定的命名规则（如 layer.mlp.experts）适配不同模型，而是复用模型定义中注册的 EP Plan 键值，自动推导专家模块，保证对不同 MoE 架构模型的兼容性。<br>非专家模块适配：非专家模块不受 EP 影响，仅执行原生 FSDP2 分片，分片大小等于全局 world size，仅使用 1 维的 FSDP 设备网格。</p>
 </li>
 </ul>
-<h4 id="3-定制化的预取配置（Configuring-Proper-Prefetching）"><a href="#3-定制化的预取配置（Configuring-Proper-Prefetching）" class="headerlink" title="3. 定制化的预取配置（Configuring Proper Prefetching）"></a>3. 定制化的预取配置（Configuring Proper Prefetching）</h4><p>这是 EP+FSDP2 混合并行下的核心性能优化点，解决了原生配置的效率缺陷：</p>
+<h3 id="3-定制化的预取配置（Configuring-Proper-Prefetching）"><a href="#3-定制化的预取配置（Configuring-Proper-Prefetching）" class="headerlink" title="3. 定制化的预取配置（Configuring Proper Prefetching）"></a>3. 定制化的预取配置（Configuring Proper Prefetching）</h3><p>这是 EP+FSDP2 混合并行下的核心性能优化点，解决了原生配置的效率缺陷：</p>
 <ul>
 <li>原生配置的问题：EP+FSDP2 的嵌套分片结构，会导致 FSDP2 默认的预取配置效率极低。注意力模块和专家模块会被识别为独立层，注意力计算的耗时无法覆盖专家模块 AllGather 操作的通信耗时，无法实现有效的通信 - 计算重叠。</li>
 <li>VeOmni 的解决方案：手动定制预取逻辑，<strong>要求每个 Decoder 层在前向传播时预取下一个 Decoder 层的注意力和专家模块，在反向传播时预取上一个 Decoder 层的注意力和专家模块</strong>，最大化通信与计算的重叠度，显著提升训练吞吐量。</li>
@@ -829,7 +829,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Qwen3-MoE-30B-A3B%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">Qwen3-MoE-30B-A3B模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VeOmni%E5%88%86%E7%89%87%E7%BB%B4%E5%BA%A6%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.</span> <span class="nav-text">VeOmni分片维度设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E5%B9%B6%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">完整并行流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%93%E5%AE%B6-%E9%9D%9E%E4%B8%93%E5%AE%B6%E6%A8%A1%E5%9D%97%E7%9A%84%E5%B9%B6%E8%A1%8C%E8%A7%84%E5%88%99%E5%B7%AE%E5%BC%82"><span class="nav-number">4.</span> <span class="nav-text">专家&#x2F;非专家模块的并行规则差异</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E8%AE%BE%E8%AE%A1"><span class="nav-number">5.</span> <span class="nav-text">为什么这么设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Expert-Parallelism-Details%EF%BC%88%E4%B8%93%E5%AE%B6%E5%B9%B6%E8%A1%8C%E7%BB%86%E8%8A%82%EF%BC%89"><span class="nav-number">5.1.</span> <span class="nav-text">Expert Parallelism Details（专家并行细节）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FSDP2-Details%EF%BC%88FSDP2-%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82%EF%BC%89"><span class="nav-number">5.2.</span> <span class="nav-text">FSDP2 Details（FSDP2 实现细节）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E8%87%AA%E5%BA%95%E5%90%91%E4%B8%8A%E7%9A%84%E5%88%86%E7%89%87%E7%AD%96%E7%95%A5%EF%BC%88Sharding-from-the-bottom-up%EF%BC%89"><span class="nav-number">5.2.1.</span> <span class="nav-text">1. 自底向上的分片策略（Sharding from the bottom up）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%88%86%E6%A8%A1%E5%9D%97%E7%9A%84%E6%AD%A3%E7%A1%AE%E7%BB%B4%E5%BA%A6%E5%88%86%E7%89%87%EF%BC%88Sharding-Modules-with-Correct-Dimensions%EF%BC%89"><span class="nav-number">5.2.2.</span> <span class="nav-text">2. 分模块的正确维度分片（Sharding Modules with Correct Dimensions）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%AE%9A%E5%88%B6%E5%8C%96%E7%9A%84%E9%A2%84%E5%8F%96%E9%85%8D%E7%BD%AE%EF%BC%88Configuring-Proper-Prefetching%EF%BC%89"><span class="nav-number">5.2.3.</span> <span class="nav-text">3. 定制化的预取配置（Configuring Proper Prefetching）</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Qwen3-MoE-30B-A3B%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">Qwen3-MoE-30B-A3B模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#VeOmni%E5%88%86%E7%89%87%E7%BB%B4%E5%BA%A6%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.</span> <span class="nav-text">VeOmni分片维度设计</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E5%B9%B6%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">完整并行流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%93%E5%AE%B6-%E9%9D%9E%E4%B8%93%E5%AE%B6%E6%A8%A1%E5%9D%97%E7%9A%84%E5%B9%B6%E8%A1%8C%E8%A7%84%E5%88%99%E5%B7%AE%E5%BC%82"><span class="nav-number">4.</span> <span class="nav-text">专家&#x2F;非专家模块的并行规则差异</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E8%AE%BE%E8%AE%A1"><span class="nav-number">5.</span> <span class="nav-text">为什么这么设计</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#VeOmni%E5%B9%B6%E8%A1%8C%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82"><span class="nav-number">6.</span> <span class="nav-text">VeOmni并行实现细节</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Expert-Parallelism-Details%EF%BC%88%E4%B8%93%E5%AE%B6%E5%B9%B6%E8%A1%8C%E7%BB%86%E8%8A%82%EF%BC%89"><span class="nav-number">6.1.</span> <span class="nav-text">Expert Parallelism Details（专家并行细节）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FSDP2-Details%EF%BC%88FSDP2-%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82%EF%BC%89"><span class="nav-number">6.2.</span> <span class="nav-text">FSDP2 Details（FSDP2 实现细节）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%87%AA%E5%BA%95%E5%90%91%E4%B8%8A%E7%9A%84%E5%88%86%E7%89%87%E7%AD%96%E7%95%A5%EF%BC%88Sharding-from-the-bottom-up%EF%BC%89"><span class="nav-number">6.2.1.</span> <span class="nav-text">1. 自底向上的分片策略（Sharding from the bottom up）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%88%86%E6%A8%A1%E5%9D%97%E7%9A%84%E6%AD%A3%E7%A1%AE%E7%BB%B4%E5%BA%A6%E5%88%86%E7%89%87%EF%BC%88Sharding-Modules-with-Correct-Dimensions%EF%BC%89"><span class="nav-number">6.2.2.</span> <span class="nav-text">2. 分模块的正确维度分片（Sharding Modules with Correct Dimensions）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%AE%9A%E5%88%B6%E5%8C%96%E7%9A%84%E9%A2%84%E5%8F%96%E9%85%8D%E7%BD%AE%EF%BC%88Configuring-Proper-Prefetching%EF%BC%89"><span class="nav-number">6.2.3.</span> <span class="nav-text">3. 定制化的预取配置（Configuring Proper Prefetching）</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
