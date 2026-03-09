@@ -4,6 +4,60 @@
   
     
     <entry>
+      <title>广义优势估计(GAE)推导</title>
+      <link href="/RL/ppo_gae.html"/>
+      <url>/RL/ppo_gae.html</url>
+      
+        <content type="html"><![CDATA[<p><img src="/images/ppo_gae.jpg" alt="img"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 强化学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> RL </tag>
+            
+            <tag> GAE </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>策略梯度损失推导</title>
+      <link href="/RL/policy_loss.html"/>
+      <url>/RL/policy_loss.html</url>
+      
+        <content type="html"><![CDATA[<p><img src="/images/policy_loss.jpg" alt="img"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 强化学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> RL </tag>
+            
+            <tag> Loss </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Qwen3-MoE-30B-A3B模型EP+FSDP2并行方案</title>
       <link href="/SFT/MoE%E6%A8%A1%E5%9E%8B%E5%B9%B6%E8%A1%8C%E8%AE%AD%E7%BB%83.html"/>
       <url>/SFT/MoE%E6%A8%A1%E5%9E%8B%E5%B9%B6%E8%A1%8C%E8%AE%AD%E7%BB%83.html</url>
@@ -40,7 +94,7 @@
       
       <categories>
           
-          <category> RL </category>
+          <category> 强化学习 </category>
           
       </categories>
       
