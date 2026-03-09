@@ -601,10 +601,11 @@
       
         
           
-          PPO: 近端策略优化, Proximal Policy OptimizationPG: Policy Gradient
+          PPO（Proximal Policy Optimization）: 近端策略优化PG: Policy Gradient
 推导过程
+PPO 是在 PG 基础上增加了对 $r^t$ 的裁剪，限制策略更新幅度，遵循 “保守更新” 原则。
 标准PPO的问题
-$A^t$ &lt; 0, 原始$r^t$(θ) &gt; 1+ϵ时，$r^t$​(θ)$A^t$​ &lt; (1+ϵ)$A^t​$, 此时min操
+$A^t$ &lt; 0, 原始$r^t$(θ)
           ...
           <!--noindex-->
           <div class="post-button text-center">

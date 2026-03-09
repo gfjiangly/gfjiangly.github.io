@@ -105,17 +105,17 @@
 
 
 
-<meta name="description" content="PPO: 近端策略优化, Proximal Policy OptimizationPG: Policy Gradient 推导过程 标准PPO的问题 $A^t$ &lt; 0, 原始$r^t$(θ) &gt; 1+ϵ时，$r^t$​(θ)$A^t$​ &lt; (1+ϵ)$A^t​$, 此时min操作会选择更小的原始乘积$r^t$​(θ)$A^t$​，裁剪完全不起作用 例子：$A^t$ ​&#x3D; −1">
+<meta name="description" content="PPO（Proximal Policy Optimization）: 近端策略优化PG: Policy Gradient 推导过程 PPO 是在 PG 基础上增加了对 $r^t$ 的裁剪，限制策略更新幅度，遵循 “保守更新” 原则。 标准PPO的问题 $A^t$ &lt; 0, 原始$r^t$(θ) &gt; 1+ϵ时，$r^t$​(θ)$A^t$​ &lt; (1+ϵ)$A^t​$, 此时min">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PPO 策略梯度损失推导">
 <meta property="og:url" content="https://gfjiangly.github.io/RL/policy_loss.html">
 <meta property="og:site_name" content="jiang">
-<meta property="og:description" content="PPO: 近端策略优化, Proximal Policy OptimizationPG: Policy Gradient 推导过程 标准PPO的问题 $A^t$ &lt; 0, 原始$r^t$(θ) &gt; 1+ϵ时，$r^t$​(θ)$A^t$​ &lt; (1+ϵ)$A^t​$, 此时min操作会选择更小的原始乘积$r^t$​(θ)$A^t$​，裁剪完全不起作用 例子：$A^t$ ​&#x3D; −1">
+<meta property="og:description" content="PPO（Proximal Policy Optimization）: 近端策略优化PG: Policy Gradient 推导过程 PPO 是在 PG 基础上增加了对 $r^t$ 的裁剪，限制策略更新幅度，遵循 “保守更新” 原则。 标准PPO的问题 $A^t$ &lt; 0, 原始$r^t$(θ) &gt; 1+ϵ时，$r^t$​(θ)$A^t$​ &lt; (1+ϵ)$A^t​$, 此时min">
 <meta property="og:locale">
 <meta property="og:image" content="https://gfjiangly.github.io/images/policy_loss.jpg">
 <meta property="og:image" content="https://gfjiangly.github.io/images/dual-clip_ppo.png">
 <meta property="article:published_time" content="2026-03-09T14:58:00.000Z">
-<meta property="article:modified_time" content="2026-03-09T15:59:46.353Z">
+<meta property="article:modified_time" content="2026-03-09T16:17:08.632Z">
 <meta property="article:author" content="Jiang.G.F">
 <meta property="article:tag" content="Loss">
 <meta property="article:tag" content="RL">
@@ -441,8 +441,9 @@
       
 
       
-        <p>PPO: 近端策略优化, Proximal Policy Optimization<br>PG: Policy Gradient</p>
+        <p>PPO（Proximal Policy Optimization）: 近端策略优化<br>PG: Policy Gradient</p>
 <h2 id="推导过程"><a href="#推导过程" class="headerlink" title="推导过程"></a>推导过程</h2><p><img src="/images/policy_loss.jpg" alt="img"></p>
+<p>PPO 是在 PG 基础上增加了对 $r^t$ 的裁剪，限制策略更新幅度，遵循 “保守更新” 原则。</p>
 <h2 id="标准PPO的问题"><a href="#标准PPO的问题" class="headerlink" title="标准PPO的问题"></a>标准PPO的问题</h2><ul>
 <li>$A^t$ &lt; 0, 原始$r^t$(θ) &gt; 1+ϵ时，$r^t$​(θ)$A^t$​ &lt; (1+ϵ)$A^t​$, 此时min操作会选择更小的原始乘积$r^t$​(θ)$A^t$​，裁剪完全不起作用<ul>
 <li>例子：$A^t$ ​= −10，离策略下$r^t$​(θ) = 100（极易出现的极端值）：<ul>
@@ -549,7 +550,7 @@
   <!-- 修改时间 -->
   <li>
     <strong>更新于： </strong>
-    2026年03月09日 - 23时03分
+    2026年03月10日 - 00时03分
   </li>
 
   <!-- 引用链接 -->
