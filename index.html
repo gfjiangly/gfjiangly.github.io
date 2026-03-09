@@ -517,7 +517,7 @@
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/RL/policy_loss.html" itemprop="url">策略梯度损失推导</a></h2>
+                <a class="post-title-link" href="/RL/policy_loss.html" itemprop="url">PPO 策略梯度损失推导</a></h2>
         
 
         <div class="post-meta">
@@ -602,8 +602,9 @@
         
           
           PPO: 近端策略优化, Proximal Policy OptimizationPG: Policy Gradient
-双裁剪 PPO（Dual-Clip PPO）算法的策略梯度损失计算逻辑:
-1234567891011121314151617181920212223242526272829303
+推导过程
+标准PPO的问题
+$A^t$ &lt; 0, 原始$r^t$(θ) &gt; 1+ϵ时，$r^t$​(θ)$A^t$​ &lt; (1+ϵ)$A^t​$, 此时min操
           ...
           <!--noindex-->
           <div class="post-button text-center">
