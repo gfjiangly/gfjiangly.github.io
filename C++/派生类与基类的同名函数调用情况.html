@@ -162,7 +162,11 @@
 
 
 
-<meta name="generator" content="Hexo 8.1.1"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -438,11 +442,9 @@
 
       
         <p>注意：这里仅讨论同名函数为非虚函数情况</p>
-<h2 id="1-先看-非同名函数-调用情况"><a href="#1-先看-非同名函数-调用情况" class="headerlink" title="1 先看 非同名函数 调用情况"></a>1 先看 <code>非同名函数</code> 调用情况</h2><p>此种情况最简单，结论是可通过子类直接调用自己没有的父类函数。</p>
+<h2 id="1__u5148_u770B__u975E_u540C_u540D_u51FD_u6570__u8C03_u7528_u60C5_u51B5"><a href="#1__u5148_u770B__u975E_u540C_u540D_u51FD_u6570__u8C03_u7528_u60C5_u51B5" class="headerlink" title="1 先看 非同名函数 调用情况"></a>1 先看 <code>非同名函数</code> 调用情况</h2><p>此种情况最简单，结论是可通过子类直接调用自己没有的父类函数。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;I&#x27;am base class printer.&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Deprive</span>: <span class="keyword">public</span> Base</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">new_print</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;I&#x27;am deprive class printer.&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Deprive deprive;</span><br><span class="line">deprive.<span class="built_in">print</span>();	<span class="comment">// 可以通过子类对象直接调用基类的函数</span></span><br></pre></td></tr></table></figure>
-
-
-<h2 id="2-函数名相同，形参的个数或类型不同的情况"><a href="#2-函数名相同，形参的个数或类型不同的情况" class="headerlink" title="2 函数名相同，形参的个数或类型不同的情况"></a>2 <code>函数名相同，形参的个数或类型不同</code>的情况</h2><p>结论：</p>
+<h2 id="2__u51FD_u6570_u540D_u76F8_u540C_uFF0C_u5F62_u53C2_u7684_u4E2A_u6570_u6216_u7C7B_u578B_u4E0D_u540C_u7684_u60C5_u51B5"><a href="#2__u51FD_u6570_u540D_u76F8_u540C_uFF0C_u5F62_u53C2_u7684_u4E2A_u6570_u6216_u7C7B_u578B_u4E0D_u540C_u7684_u60C5_u51B5" class="headerlink" title="2 函数名相同，形参的个数或类型不同的情况"></a>2 <code>函数名相同，形参的个数或类型不同</code>的情况</h2><p>结论：</p>
 <ul>
 <li>子类函数覆盖基类的同名函数，无法通过派生类直接调用基类同名函数（与Python可以直接调用父类函数也不同）</li>
 <li>可以显示调用基类函数</li>
@@ -450,10 +452,7 @@
 <li>这种情况是最需要要关注的，不属于函数重载，注意区分</li>
 </ul>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Deprive</span>: <span class="keyword">public</span> Base</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">(<span class="type">int</span> a)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;I have a int type parameter.&quot;</span> &lt;&lt; a &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">Deprive deprive;</span><br><span class="line">deprive.<span class="built_in">print</span>();	<span class="comment">// 编译不通过，无法通过子类对象直接调用基类的同名方法</span></span><br><span class="line">deprive.Base::<span class="built_in">print</span>(c);	<span class="comment">// ok, 方法一：显示调用基类方法</span></span><br><span class="line">Base * pt;</span><br><span class="line">pt = &amp;deprive;</span><br><span class="line">pt-&gt;<span class="built_in">print</span>();	<span class="comment">// ok, 方法二：定义基类指针，让基类指针指向派生类对象，用指针调用基类函数</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="3-函数名相同，形参的个数和类型也相同的情况"><a href="#3-函数名相同，形参的个数和类型也相同的情况" class="headerlink" title="3 函数名相同，形参的个数和类型也相同的情况"></a>3 <code>函数名相同，形参的个数和类型也相同</code>的情况</h2><p>结论：</p>
+<h2 id="3__u51FD_u6570_u540D_u76F8_u540C_uFF0C_u5F62_u53C2_u7684_u4E2A_u6570_u548C_u7C7B_u578B_u4E5F_u76F8_u540C_u7684_u60C5_u51B5"><a href="#3__u51FD_u6570_u540D_u76F8_u540C_uFF0C_u5F62_u53C2_u7684_u4E2A_u6570_u548C_u7C7B_u578B_u4E5F_u76F8_u540C_u7684_u60C5_u51B5" class="headerlink" title="3 函数名相同，形参的个数和类型也相同的情况"></a>3 <code>函数名相同，形参的个数和类型也相同</code>的情况</h2><p>结论：</p>
 <ul>
 <li>子类覆盖父类同名函数，直接用子类对象调用同名函数会默认调用子类的函数。<br>这种情况下想调用基类方法，与<code>函数名相同，形参的个数或类型不同</code>的情况相同</li>
 </ul>
@@ -764,7 +763,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%85%88%E7%9C%8B-%E9%9D%9E%E5%90%8C%E5%90%8D%E5%87%BD%E6%95%B0-%E8%B0%83%E7%94%A8%E6%83%85%E5%86%B5"><span class="nav-number">1.</span> <span class="nav-text">1 先看 非同名函数 调用情况</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%87%BD%E6%95%B0%E5%90%8D%E7%9B%B8%E5%90%8C%EF%BC%8C%E5%BD%A2%E5%8F%82%E7%9A%84%E4%B8%AA%E6%95%B0%E6%88%96%E7%B1%BB%E5%9E%8B%E4%B8%8D%E5%90%8C%E7%9A%84%E6%83%85%E5%86%B5"><span class="nav-number">2.</span> <span class="nav-text">2 函数名相同，形参的个数或类型不同的情况</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%87%BD%E6%95%B0%E5%90%8D%E7%9B%B8%E5%90%8C%EF%BC%8C%E5%BD%A2%E5%8F%82%E7%9A%84%E4%B8%AA%E6%95%B0%E5%92%8C%E7%B1%BB%E5%9E%8B%E4%B9%9F%E7%9B%B8%E5%90%8C%E7%9A%84%E6%83%85%E5%86%B5"><span class="nav-number">3.</span> <span class="nav-text">3 函数名相同，形参的个数和类型也相同的情况</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1__u5148_u770B__u975E_u540C_u540D_u51FD_u6570__u8C03_u7528_u60C5_u51B5"><span class="nav-number">1.</span> <span class="nav-text">1 先看 非同名函数 调用情况</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2__u51FD_u6570_u540D_u76F8_u540C_uFF0C_u5F62_u53C2_u7684_u4E2A_u6570_u6216_u7C7B_u578B_u4E0D_u540C_u7684_u60C5_u51B5"><span class="nav-number">2.</span> <span class="nav-text">2 函数名相同，形参的个数或类型不同的情况</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3__u51FD_u6570_u540D_u76F8_u540C_uFF0C_u5F62_u53C2_u7684_u4E2A_u6570_u548C_u7C7B_u578B_u4E5F_u76F8_u540C_u7684_u60C5_u51B5"><span class="nav-number">3.</span> <span class="nav-text">3 函数名相同，形参的个数和类型也相同的情况</span></a></li></ol></div>
             
 
           </div>

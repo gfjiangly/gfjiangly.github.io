@@ -164,7 +164,11 @@
 
 
 
-<meta name="generator" content="Hexo 8.1.1"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -440,10 +444,9 @@
 
       
         <p>本文主要讨论<code>copy</code>和<code>view</code>或者说<code>deep copy</code>和<code>shallow copy</code>。下文使用<code>深拷贝</code>一词表示复制对象的每一个元素。使用<code>浅拷贝</code>一词表示仅复制对象的浅层。在讨论与Numpy相关知识时使用拷贝表示对数组数据的深拷贝，使用<code>视图</code>一词表示共享数组数据。</p>
-<h2 id="Q1-从list构造array，使用复制还是视图？"><a href="#Q1-从list构造array，使用复制还是视图？" class="headerlink" title="Q1 从list构造array，使用复制还是视图？"></a>Q1 从list构造array，使用复制还是视图？</h2><p>A1 如果list中是相同基本数据类型（int, float等），则采用copy，否则采用view。因为如果list保存如字典这类数据，np的数组没法以连续内存保存这些数据，因此不得不采用view形式。</p>
+<h2 id="Q1__u4ECElist_u6784_u9020array_uFF0C_u4F7F_u7528_u590D_u5236_u8FD8_u662F_u89C6_u56FE_uFF1F"><a href="#Q1__u4ECElist_u6784_u9020array_uFF0C_u4F7F_u7528_u590D_u5236_u8FD8_u662F_u89C6_u56FE_uFF1F" class="headerlink" title="Q1 从list构造array，使用复制还是视图？"></a>Q1 从list构造array，使用复制还是视图？</h2><p>A1 如果list中是相同基本数据类型（int, float等），则采用copy，否则采用view。因为如果list保存如字典这类数据，np的数组没法以连续内存保存这些数据，因此不得不采用view形式。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = [[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = np.array(a)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">array([[<span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">       [<span class="number">3</span>, <span class="number">4</span>]])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b[<span class="number">0</span>][<span class="number">0</span>] = <span class="number">0</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">[[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">array([[<span class="number">0</span>, <span class="number">2</span>],</span><br><span class="line">       [<span class="number">3</span>, <span class="number">4</span>]])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = [&#123;<span class="string">&#x27;a&#x27;</span>: <span class="number">1</span>, <span class="string">&#x27;b&#x27;</span>:<span class="number">2</span>&#125;, &#123;<span class="string">&#x27;a&#x27;</span>: <span class="number">3</span>, <span class="string">&#x27;b&#x27;</span>: <span class="number">4</span>&#125;]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = np.array(a)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b[<span class="number">0</span>][<span class="string">&#x27;a&#x27;</span>] = <span class="number">0</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">[&#123;<span class="string">&#x27;a&#x27;</span>: <span class="number">0</span>, <span class="string">&#x27;b&#x27;</span>: <span class="number">2</span>&#125;, &#123;<span class="string">&#x27;a&#x27;</span>: <span class="number">3</span>, <span class="string">&#x27;b&#x27;</span>: <span class="number">4</span>&#125;]</span><br></pre></td></tr></table></figure>
-
-<h2 id="Python内置数据类型嵌套结构的浅拷贝"><a href="#Python内置数据类型嵌套结构的浅拷贝" class="headerlink" title="Python内置数据类型嵌套结构的浅拷贝"></a>Python内置数据类型嵌套结构的浅拷贝</h2><p><img src="/images/1568258910146.png" alt="1568258910146"></p>
+<h2 id="Python_u5185_u7F6E_u6570_u636E_u7C7B_u578B_u5D4C_u5957_u7ED3_u6784_u7684_u6D45_u62F7_u8D1D"><a href="#Python_u5185_u7F6E_u6570_u636E_u7C7B_u578B_u5D4C_u5957_u7ED3_u6784_u7684_u6D45_u62F7_u8D1D" class="headerlink" title="Python内置数据类型嵌套结构的浅拷贝"></a>Python内置数据类型嵌套结构的浅拷贝</h2><p><img src="/images/1568258910146.png" alt="1568258910146"></p>
 
       
     </div>
@@ -751,7 +754,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Q1-%E4%BB%8Elist%E6%9E%84%E9%80%A0array%EF%BC%8C%E4%BD%BF%E7%94%A8%E5%A4%8D%E5%88%B6%E8%BF%98%E6%98%AF%E8%A7%86%E5%9B%BE%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">Q1 从list构造array，使用复制还是视图？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Python%E5%86%85%E7%BD%AE%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%B5%8C%E5%A5%97%E7%BB%93%E6%9E%84%E7%9A%84%E6%B5%85%E6%8B%B7%E8%B4%9D"><span class="nav-number">2.</span> <span class="nav-text">Python内置数据类型嵌套结构的浅拷贝</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Q1__u4ECElist_u6784_u9020array_uFF0C_u4F7F_u7528_u590D_u5236_u8FD8_u662F_u89C6_u56FE_uFF1F"><span class="nav-number">1.</span> <span class="nav-text">Q1 从list构造array，使用复制还是视图？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Python_u5185_u7F6E_u6570_u636E_u7C7B_u578B_u5D4C_u5957_u7ED3_u6784_u7684_u6D45_u62F7_u8D1D"><span class="nav-number">2.</span> <span class="nav-text">Python内置数据类型嵌套结构的浅拷贝</span></a></li></ol></div>
             
 
           </div>

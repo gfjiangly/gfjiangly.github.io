@@ -162,7 +162,11 @@
 
 
 
-<meta name="generator" content="Hexo 8.1.1"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -449,7 +453,7 @@
 
       
         <p>背包模型从形式上看属于二维DP。</p>
-<h2 id="0-1背包问题"><a href="#0-1背包问题" class="headerlink" title="0-1背包问题"></a>0-1背包问题</h2><p><strong>问题描述</strong>： 有 N 个物品和一个容量为 V 的背包， 放入第 i 个物品耗费的空间是Ci，得到的价值是Wi。求解价值总和最大值？（或求解将哪些物品装入背包可使价值总和最大 ）</p>
+<h2 id="0-1_u80CC_u5305_u95EE_u9898"><a href="#0-1_u80CC_u5305_u95EE_u9898" class="headerlink" title="0-1背包问题"></a>0-1背包问题</h2><p><strong>问题描述</strong>： 有 N 个物品和一个容量为 V 的背包， 放入第 i 个物品耗费的空间是Ci，得到的价值是Wi。求解价值总和最大值？（或求解将哪些物品装入背包可使价值总和最大 ）</p>
 <p><strong>状态定义</strong>：<br> <code>f[i][v]</code>表示 i 个物品恰好放入一个容量为 v 的背包可以获得的最大价值。注意这个状态定义不是问题的状态，是个一般性的状态表示，代入N、V才是问题的状态。小v可以是任意一个可能的容量。</p>
 <p><strong>决策</strong>：<br>假设前一阶段的状态是最优状态（最优子结构），考虑第i个物品放还是不放。</p>
 <p><strong>状态转移</strong>：</p>
@@ -458,12 +462,12 @@
 <p>假设前一阶段的状态是最优状态成立的条件是，可以得到类似上面的状态转移方程。</p>
 <p>最后就是从已知的初始状态转移到问题状态。</p>
 <p> <strong>时间复杂度</strong>：<code>O(V*N)</code></p>
-<h2 id="完全背包"><a href="#完全背包" class="headerlink" title="完全背包"></a>完全背包</h2><p><strong>问题描述</strong>：有N种物品（每种物品无限件）和一个容量为V的背包。放入一个第 i 种物品耗费的空间是Ci，得到的价值是Wi。求解价值总和最大值？（或求解将哪些物品装入背包可使价值总和最大 ）</p>
+<h2 id="u5B8C_u5168_u80CC_u5305"><a href="#u5B8C_u5168_u80CC_u5305" class="headerlink" title="完全背包"></a>完全背包</h2><p><strong>问题描述</strong>：有N种物品（每种物品无限件）和一个容量为V的背包。放入一个第 i 种物品耗费的空间是Ci，得到的价值是Wi。求解价值总和最大值？（或求解将哪些物品装入背包可使价值总和最大 ）</p>
 <p><strong>状态定义</strong>：<code>f[i][v]</code>表示 i 种物品放入背包容量为v可以获得的最大价值。</p>
 <p><strong>决策</strong>：<br>在前一个阶段的状态基础上，考虑放第 i 种物品。</p>
 <p><strong>状态转移</strong>：<br>放的话，假设第 i 种放 k 个，此时前一个阶段状态为 <code>f[i-1][v-k*Ci]</code>；不放的话相当于k=0，k的范围是[0, v/Ci]，因此得到：<br><code>f[i][v] = max{ f[i-1][v-kCi] + kWi | 0 &lt;= k &lt;= v/Ci}</code><br> 当k的取值为0,1时，这就是0-1背包的状态转移方程 </p>
 <p> <strong>时间复杂度</strong>：<code>O(V*N*sum{V/Ci})</code></p>
-<h2 id="多重背包"><a href="#多重背包" class="headerlink" title="多重背包"></a>多重背包</h2><p><strong>问题描述</strong>：有N种物品（每种物品Mi件）和一个容量为V的背包。放入第i种物品耗费的空间是Ci，得到的价值是Wi。求解价值总和最大值？（或求解将哪些物品装入背包可使价值总和最大 ）</p>
+<h2 id="u591A_u91CD_u80CC_u5305"><a href="#u591A_u91CD_u80CC_u5305" class="headerlink" title="多重背包"></a>多重背包</h2><p><strong>问题描述</strong>：有N种物品（每种物品Mi件）和一个容量为V的背包。放入第i种物品耗费的空间是Ci，得到的价值是Wi。求解价值总和最大值？（或求解将哪些物品装入背包可使价值总和最大 ）</p>
 <p><strong>状态定义</strong>： <code>f[i][v]</code>表示 i 种物品放入一个容量为v的背包可以获得的最大价值。 </p>
 <p><strong>决策</strong>：<br>在前一个阶段的状态基础上，考虑放第 i 种物品。</p>
 <p><strong>状态转移</strong>：</p>
@@ -777,7 +781,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-1%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">0-1背包问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E5%85%A8%E8%83%8C%E5%8C%85"><span class="nav-number">2.</span> <span class="nav-text">完全背包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E9%87%8D%E8%83%8C%E5%8C%85"><span class="nav-number">3.</span> <span class="nav-text">多重背包</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-1_u80CC_u5305_u95EE_u9898"><span class="nav-number">1.</span> <span class="nav-text">0-1背包问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B8C_u5168_u80CC_u5305"><span class="nav-number">2.</span> <span class="nav-text">完全背包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u591A_u91CD_u80CC_u5305"><span class="nav-number">3.</span> <span class="nav-text">多重背包</span></a></li></ol></div>
             
 
           </div>

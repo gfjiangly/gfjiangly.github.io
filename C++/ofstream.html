@@ -162,7 +162,11 @@
 
 
 
-<meta name="generator" content="Hexo 8.1.1"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -469,7 +473,6 @@
 </ul>
 <p>每个文件流都应与一个打开的文件相联系:</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// (1)在建立文件流对象的同时打开文件：</span></span><br><span class="line"><span class="function">ifstream <span class="title">fin</span><span class="params">(<span class="string">&quot;d:\\sav\\datafile.dat&quot;</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// (2)先建立文件流对象，再在适当的时候打开文件：</span></span><br><span class="line">ifstream fin;</span><br><span class="line"><span class="comment">// ......</span></span><br><span class="line">fin.<span class="built_in">open</span>((<span class="string">&quot;d:\\sav\\datafile.dat&quot;</span>);</span><br><span class="line">        </span><br><span class="line"><span class="comment">// 关闭流</span></span><br><span class="line">fin.<span class="built_in">close</span>();</span><br></pre></td></tr></table></figure>
-
 
       
     </div>

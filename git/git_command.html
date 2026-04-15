@@ -162,7 +162,11 @@
 
 
 
-<meta name="generator" content="Hexo 8.1.1"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -437,13 +441,8 @@
       
 
       
-        <h2 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建名为xxx的新分支，并切到新分支</span></span><br><span class="line">git checkout -b xxx</span><br><span class="line"><span class="comment"># checkout -b 是复合命令，一个是创建，一个是切换</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建分支</span></span><br><span class="line">git branch dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># 切换分支</span></span><br><span class="line">git checkout dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看当前所有的分支，结果显示带*号的，而且颜色是绿色的即为我们当前所在的分支</span></span><br><span class="line">git branch -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除本地xxx分支</span></span><br><span class="line">git branch -d xxx</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除远程xxx分支</span></span><br><span class="line">git push origin --delete xxx</span><br></pre></td></tr></table></figure>
-
-
-<h2 id="合并"><a href="#合并" class="headerlink" title="合并"></a>合并</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 合并master分支到当前分支</span></span><br><span class="line">git merge master</span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并xxx分支到master（先切到master分支）</span></span><br><span class="line">git merge xxx</span><br></pre></td></tr></table></figure>
-
-
-
+        <h2 id="u5206_u652F"><a href="#u5206_u652F" class="headerlink" title="分支"></a>分支</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建名为xxx的新分支，并切到新分支</span></span><br><span class="line">git checkout -b xxx</span><br><span class="line"><span class="comment"># checkout -b 是复合命令，一个是创建，一个是切换</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建分支</span></span><br><span class="line">git branch dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># 切换分支</span></span><br><span class="line">git checkout dev</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看当前所有的分支，结果显示带*号的，而且颜色是绿色的即为我们当前所在的分支</span></span><br><span class="line">git branch -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除本地xxx分支</span></span><br><span class="line">git branch -d xxx</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除远程xxx分支</span></span><br><span class="line">git push origin --delete xxx</span><br></pre></td></tr></table></figure>
+<h2 id="u5408_u5E76"><a href="#u5408_u5E76" class="headerlink" title="合并"></a>合并</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 合并master分支到当前分支</span></span><br><span class="line">git merge master</span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并xxx分支到master（先切到master分支）</span></span><br><span class="line">git merge xxx</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -751,7 +750,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%94%AF"><span class="nav-number">1.</span> <span class="nav-text">分支</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%88%E5%B9%B6"><span class="nav-number">2.</span> <span class="nav-text">合并</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5206_u652F"><span class="nav-number">1.</span> <span class="nav-text">分支</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5408_u5E76"><span class="nav-number">2.</span> <span class="nav-text">合并</span></a></li></ol></div>
             
 
           </div>

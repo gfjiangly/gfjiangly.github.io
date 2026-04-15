@@ -157,7 +157,11 @@
 
 
 
-<meta name="generator" content="Hexo 8.1.1"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -781,8 +785,7 @@ A2 有位置参数、关键字参数（默认参数）、可变参数（元组�
 将类的方法变成属性调用方式，相当于少了()
 看起来具有迷惑性，例如，方法返回的是一个字典
 123@propertydef module_dict(self):    return self._module_dict
-
-调用：obj_type = registry.module_d
+调用：obj_type = registry.module_di
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1461,10 +1464,11 @@ Q1 从list构造array，使用复制还是视
       
         
           
-          _ __getattr _ __object. __getattr__(self, name)是一个对象方法，如果找不到对象的属性时会调用这个方法。
+          _ getattr _ object. __getattr__(self, name)是一个对象方法，如果找不到对象的属性时会调用这个方法。
 这个方法应该返回属性值或者抛出AttributeError异常。
 注意，如果通过正常机制能找到对象属性的话，不会调用__getattr__方法。
 示例
+123
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1632,10 +1636,10 @@ Q1 从list构造array，使用复制还是视
       
         
           
-          init行为当在Python中出现继承的情况时，一定要注意初始化函数_init_的行为:
+          init行为当在Python中出现继承的情况时，一定要注意初始化函数init的行为:
 
 如果子类没有定义自己的初始化函数，父类的初始化函数会被默认调用；但是如果要实例化子类的对象，则只能传入父类的初始化函数对应的参数，否则会出错。
-如果子类定义了自己的初始化函数，而在子类中没有显示调用父类的初始
+如果子类定义了自己的初始化函数，而在子类中没有显示调用父类的初始化函
           ...
           <!--noindex-->
           <div class="post-button text-center">

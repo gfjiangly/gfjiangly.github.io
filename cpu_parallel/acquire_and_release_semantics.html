@@ -170,7 +170,11 @@
 
 
 
-<meta name="generator" content="Hexo 8.1.1"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -468,21 +472,21 @@
 <p>一旦理解了上面的定义，就不难发现使用我<a href="http://preshing.com/20120710/memory-barriers-are-like-source-control-operations">在上一篇文章中详细描述</a>的内存屏障类型的简单组合就可以实现获取和释放语义。必须（以某种方式）将屏障放置在读获取操作之后，但在写入释放之前。<em>[更新：请注意，在单个内存操作的技术上，这些屏障比获取和释放语义所要求的更为严格，但它们确实达到了预期的效果。]</em></p>
 <p><img src="/images/acq-rel-barriers.png" alt="img"></p>
 <p>很棒的是获取或释放语义都不需要使用<code>#StoreLoad</code>屏障，这个屏障通常是更昂贵的内存屏障类型。例如，在PowerPC，所述<code>lwsync</code>（简称“轻量同步”）指令同时扮演<code>#LoadLoad</code>，<code>#LoadStore</code>和<code>#StoreStore</code>三个障碍的角色，比包含<code>#StoreLoad</code>屏障的<code>sync</code>指令更轻量。</p>
-<h2 id="显示使用平台相关的屏障"><a href="#显示使用平台相关的屏障" class="headerlink" title="显示使用平台相关的屏障"></a>显示使用平台相关的屏障</h2><p>获得期望的内存屏障的一种方法是发出明确的屏障指令。让我们从一个简单的例子开始。假设我们正在为PowerPC进行编码，并且<code>__lwsync()</code>是发出<code>lwsync</code>指令的编译器固有函数。由于<code>lwsync</code>提供了许多屏障类型，因此我们可以在以下代码中使用它来根据需要建立获取或释放语义。在线程1中，存储<code>Ready</code>变为写释放，而在线程2中，来自的负载<code>Ready</code>变为读取获取。</p>
+<h2 id="u663E_u793A_u4F7F_u7528_u5E73_u53F0_u76F8_u5173_u7684_u5C4F_u969C"><a href="#u663E_u793A_u4F7F_u7528_u5E73_u53F0_u76F8_u5173_u7684_u5C4F_u969C" class="headerlink" title="显示使用平台相关的屏障"></a>显示使用平台相关的屏障</h2><p>获得期望的内存屏障的一种方法是发出明确的屏障指令。让我们从一个简单的例子开始。假设我们正在为PowerPC进行编码，并且<code>__lwsync()</code>是发出<code>lwsync</code>指令的编译器固有函数。由于<code>lwsync</code>提供了许多屏障类型，因此我们可以在以下代码中使用它来根据需要建立获取或释放语义。在线程1中，存储<code>Ready</code>变为写释放，而在线程2中，来自的负载<code>Ready</code>变为读取获取。</p>
 <p><img src="/images/platform-fences.png" alt="img"></p>
 <p>如果我们让两个线程都运行，并找到<code>r1 == 1</code>，则可以确认在线程1中赋给A的值已成功传递给线程2。因此，我们可以保证<code>r2 == 42</code>。在我以前的帖子，我已经<a href="http://preshing.com/20120710/memory-barriers-are-like-source-control-operations">给了一个漫长的比喻</a>为说明<code>#LoadLoad</code>和<code>#StoreStore</code>如何工作的，所以我不会在这里老调重弹这个解释。</p>
-<p>用正式的术语来说，我们说<code>Ready</code> 的存储<em>与</em> 加载<em>同步<em>。另外，我在<a href="http://preshing.com/20130823/the-synchronizes-with-relation">此处</a>单独写了一篇关于</em>synchronizes-with</em> 的文章 。到目前为止，足以说这种技术正常工作，获取和释放语义必须应用于同一变量。在这个例子中，<code>Ready</code>和存储和加载必须都是原子操作。这里<code>Ready</code>与<code>int</code>简单对齐 ，操作在PowerPC上已经是原子的。</p>
-<h2 id="在可移植C-11中使用屏障"><a href="#在可移植C-11中使用屏障" class="headerlink" title="在可移植C ++ 11中使用屏障"></a>在可移植C ++ 11中使用屏障</h2><p>上面的示例是特定于编译器和处理器的。支持多种平台的一种方法是将代码转换为C ++ 11。所有C ++ 11标识符都存在于<code>std</code>名称空间中，因此，为了使下面的示例简短，让我们假设该语句<code>using namespace std;</code>位于代码的较早位置。</p>
+<p>用正式的术语来说，我们说<code>Ready</code> 的存储<em>与</em> 加载<em>同步</em>。另外，我在<a href="http://preshing.com/20130823/the-synchronizes-with-relation">此处</a>单独写了一篇关于<em>synchronizes-with</em> 的文章 。到目前为止，足以说这种技术正常工作，获取和释放语义必须应用于同一变量。在这个例子中，<code>Ready</code>和存储和加载必须都是原子操作。这里<code>Ready</code>与<code>int</code>简单对齐 ，操作在PowerPC上已经是原子的。</p>
+<h2 id="u5728_u53EF_u79FB_u690DC_++_11_u4E2D_u4F7F_u7528_u5C4F_u969C"><a href="#u5728_u53EF_u79FB_u690DC_++_11_u4E2D_u4F7F_u7528_u5C4F_u969C" class="headerlink" title="在可移植C ++ 11中使用屏障"></a>在可移植C ++ 11中使用屏障</h2><p>上面的示例是特定于编译器和处理器的。支持多种平台的一种方法是将代码转换为C ++ 11。所有C ++ 11标识符都存在于<code>std</code>名称空间中，因此，为了使下面的示例简短，让我们假设该语句<code>using namespace std;</code>位于代码的较早位置。</p>
 <p>C ++ 11的原子库标准定义了一个可移植函数<code>atomic_thread_fence()</code>，该函数采用单个参数来指定屏障的类型。该参数有几个可能的值，但是我们在这里最感兴趣的值是<code>memory_order_acquire</code>和<code>memory_order_release</code>。我们将使用此功能代替<code>__lwsync()</code>。</p>
 <p>在此示例完成之前，还需要进行其他更改。在PowerPC上，我们知道这两个操作<code>Ready</code>都是原子的，但是我们不能对每个平台都做此假设。为了确保所有平台上的原子性，我们将把<code>Ready</code>的类型从<code>int</code>更改为<code>atomic</code>。我知道，如果考虑对齐的<code>int</code>的加载和存储在当今存在的每个现代CPU上都是原子的，这是一个愚蠢的改变。我将在<a href="http://preshing.com/20130823/the-synchronizes-with-relation"><em>synchronize-with</em></a>的帖子中写更多有关此的内容，但是现在，让我们为理论上100％正确的热情做此事。无需更改<code>A</code>。</p>
 <p><img src="/images/cpp11-fences.png" alt="img"></p>
 <p>上面的<code>memory_order_relaxed</code>意味着“确保这些操作是原子的，但不要强加尚不存在的任何排序约束/内存障碍。”</p>
 <p>再一次，上述两个<code>atomic_thread_fence()</code>调用在PowerPC上都可以使用<code>lwsync</code>实现。同样，在ARM上它们都可以使用<code>dmb</code>指令实现，我认为它至少与PowerPC的<code>lwsync</code>一样有效。在x86/64上，两个<code>atomic_thread_fence()</code>调用都可以简单地实现为<a href="http://preshing.com/20120625/memory-ordering-at-compile-time">编译器障碍</a>，因为通常x86/64上的每个加载都已经隐含了获取语义，每个存储都隐含了释放语义。这就是为什么x86/64通常被认为是<a href="http://preshing.com/20120930/weak-vs-strong-memory-models">有序的原因</a>。</p>
-<h2 id="在可移植C-11中不直接使用屏障"><a href="#在可移植C-11中不直接使用屏障" class="headerlink" title="在可移植C ++ 11中不直接使用屏障"></a>在可移植C ++ 11中不直接使用屏障</h2><p>在C ++ 11中，<code>Ready</code>无需发出显式的屏障指令就可以实现获取和释放语义。您只需要在以下操作上直接指定内存排序约束<code>Ready</code>：</p>
+<h2 id="u5728_u53EF_u79FB_u690DC_++_11_u4E2D_u4E0D_u76F4_u63A5_u4F7F_u7528_u5C4F_u969C"><a href="#u5728_u53EF_u79FB_u690DC_++_11_u4E2D_u4E0D_u76F4_u63A5_u4F7F_u7528_u5C4F_u969C" class="headerlink" title="在可移植C ++ 11中不直接使用屏障"></a>在可移植C ++ 11中不直接使用屏障</h2><p>在C ++ 11中，<code>Ready</code>无需发出显式的屏障指令就可以实现获取和释放语义。您只需要在以下操作上直接指定内存排序约束<code>Ready</code>：</p>
 <p><img src="/images/cpp11-no-fences.png" alt="img"></p>
-<p>可以将其视为将每个屏障指令滚动到<code>Ready</code>自己的操作中。*[更新：请注意，此表格与使用<a href="http://preshing.com/20131125/acquire-and-release-fences-dont-work-the-way-youd-expect">独立屏障的版本</a>不完全相同；从技术上讲，它不太严格。]<em>编译器将发出任何必需的指令，以获得所需的屏障效果。特别是在Itanium上，每个操作都可以轻松实现为一条指令：<code>ld.acq</code>和<code>st.rel</code>。与以前一样，<code>r1 == 1</code>表示一个</em>synchronizes-with*关系，确认<code>r2 == 42</code>是对的。</p>
+<p>可以将其视为将每个屏障指令滚动到<code>Ready</code>自己的操作中。<em>[更新：请注意，此表格与使用<a href="http://preshing.com/20131125/acquire-and-release-fences-dont-work-the-way-youd-expect">独立屏障的版本</a>不完全相同；从技术上讲，它不太严格。]</em>编译器将发出任何必需的指令，以获得所需的屏障效果。特别是在Itanium上，每个操作都可以轻松实现为一条指令：<code>ld.acq</code>和<code>st.rel</code>。与以前一样，<code>r1 == 1</code>表示一个<em>synchronizes-with</em>关系，确认<code>r2 == 42</code>是对的。</p>
 <p>实际上，这是在C ++ 11中表达获取和释放语义的首选方法。实际上，<code>atomic_thread_fence()</code>在上一示例中使用的功能是在标准创建的<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2633.html">后期</a>才添加的。</p>
-<h2 id="使用锁实现获取释放语义"><a href="#使用锁实现获取释放语义" class="headerlink" title="使用锁实现获取释放语义"></a>使用锁实现获取释放语义</h2><p>如您所见，本文中的所有示例均未利用获取和释放语义所提供的<code>#LoadStore</code>屏障。确实，只需要<code>#LoadLoad</code>和<code>#StoreStore</code>。这仅仅是因为在本文中，我选择了一个简单的示例让我们专注于API和语法。</p>
+<h2 id="u4F7F_u7528_u9501_u5B9E_u73B0_u83B7_u53D6_u91CA_u653E_u8BED_u4E49"><a href="#u4F7F_u7528_u9501_u5B9E_u73B0_u83B7_u53D6_u91CA_u653E_u8BED_u4E49" class="headerlink" title="使用锁实现获取释放语义"></a>使用锁实现获取释放语义</h2><p>如您所见，本文中的所有示例均未利用获取和释放语义所提供的<code>#LoadStore</code>屏障。确实，只需要<code>#LoadLoad</code>和<code>#StoreStore</code>。这仅仅是因为在本文中，我选择了一个简单的示例让我们专注于API和语法。</p>
 <p><code>#LoadStore</code>变得很重要的一种情况是，使用获取和释放语义来实现(互斥)锁。实际上，这就是获取与释放语义名称的来源：获取锁意味着获取语义，而释放锁则意味着释放语义！介于两者之间的所有内存操作都包含在一个漂亮的小屏障夹中，以防止任何不希望的内存跨越边界重新排序。</p>
 <p><img src="/images/acq-rel-lock.png" alt="img"></p>
 <p>在这里，获取和释放语义可确保在持有锁的同时进行的所有修改将完全传播到获取锁的下一个线程。锁的每种实现，即使<a href="http://preshing.com/20120226/roll-your-own-lightweight-mutex">您自己的实现</a>，也应提供这些保证。同样，这都是为在线程之间可靠地传递信息，尤其是在多核或多处理器环境中。</p>
@@ -794,7 +798,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%BE%E7%A4%BA%E4%BD%BF%E7%94%A8%E5%B9%B3%E5%8F%B0%E7%9B%B8%E5%85%B3%E7%9A%84%E5%B1%8F%E9%9A%9C"><span class="nav-number">1.</span> <span class="nav-text">显示使用平台相关的屏障</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E5%8F%AF%E7%A7%BB%E6%A4%8DC-11%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%B1%8F%E9%9A%9C"><span class="nav-number">2.</span> <span class="nav-text">在可移植C ++ 11中使用屏障</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E5%8F%AF%E7%A7%BB%E6%A4%8DC-11%E4%B8%AD%E4%B8%8D%E7%9B%B4%E6%8E%A5%E4%BD%BF%E7%94%A8%E5%B1%8F%E9%9A%9C"><span class="nav-number">3.</span> <span class="nav-text">在可移植C ++ 11中不直接使用屏障</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E9%94%81%E5%AE%9E%E7%8E%B0%E8%8E%B7%E5%8F%96%E9%87%8A%E6%94%BE%E8%AF%AD%E4%B9%89"><span class="nav-number">4.</span> <span class="nav-text">使用锁实现获取释放语义</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u663E_u793A_u4F7F_u7528_u5E73_u53F0_u76F8_u5173_u7684_u5C4F_u969C"><span class="nav-number">1.</span> <span class="nav-text">显示使用平台相关的屏障</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5728_u53EF_u79FB_u690DC_++_11_u4E2D_u4F7F_u7528_u5C4F_u969C"><span class="nav-number">2.</span> <span class="nav-text">在可移植C ++ 11中使用屏障</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5728_u53EF_u79FB_u690DC_++_11_u4E2D_u4E0D_u76F4_u63A5_u4F7F_u7528_u5C4F_u969C"><span class="nav-number">3.</span> <span class="nav-text">在可移植C ++ 11中不直接使用屏障</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4F7F_u7528_u9501_u5B9E_u73B0_u83B7_u53D6_u91CA_u653E_u8BED_u4E49"><span class="nav-number">4.</span> <span class="nav-text">使用锁实现获取释放语义</span></a></li></ol></div>
             
 
           </div>

@@ -162,7 +162,11 @@
 
 
 
-<meta name="generator" content="Hexo 8.1.1"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -447,28 +451,20 @@
 <p>如果不是则在一个称为sys.path的list中寻找（引用的时候会按照下面的顺序去引用）</p>
 <p>sys.path在python脚本执行时动态生成，包括以下3个部分： </p>
 <figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>.脚本执行的位置，即运行模块的路径 （顺序第一）</span><br><span class="line"><span class="number">2</span>.环境变量中的PYTHONPATH, 即.bash_profile （顺序第二）</span><br><span class="line"><span class="number">3</span>.第三方模块的位置，一般在site-package文件夹下 （顺序第三）</span><br><span class="line"><span class="number">4</span>.通过sys.<span class="built_in">path</span>.<span class="built_in">append</span>(<span class="built_in">path</span>)添加到sys.<span class="built_in">path</span>中的路径 （顺序第四）</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
 <p>可以看到脚本执行的位置是位于第一优先级的。</p>
 <p>查看python模块查找路径</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="built_in">print</span>(sys.path)</span><br></pre></td></tr></table></figure>
-
-
-
 <p>同名模块冲突问题：</p>
 <p>cvtools与pycocotools</p>
 <p>ImportError: cannot import name XXX</p>
 <p>Main:</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> entity <span class="keyword">import</span> Ent</span><br><span class="line"><span class="keyword">from</span> vector <span class="keyword">import</span> Vect</span><br><span class="line"><span class="comment">#the rest just creates an entity and prints the result of movement</span></span><br></pre></td></tr></table></figure>
-
 <p>Entity:</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> vector <span class="keyword">import</span> Vect</span><br><span class="line"><span class="keyword">from</span> physics <span class="keyword">import</span> Physics</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Ent</span>:</span><br><span class="line">    <span class="comment">#holds vector information and id</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">tick</span>(<span class="params">self, dt</span>):</span><br><span class="line">    <span class="comment">#this is where physics changes the velocity and position vectors</span></span><br></pre></td></tr></table></figure>
-
 <p>Vector:</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> math <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Vect</span>:</span><br><span class="line">    <span class="comment">#holds i, j, k, and does vector math</span></span><br></pre></td></tr></table></figure>
-
 <p>Physics:</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> entity <span class="keyword">import</span> Ent</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Physics</span>:</span><br><span class="line">    <span class="comment">#physics class gets an entity and does physics calculations on it.</span></span><br></pre></td></tr></table></figure>
-
 <p>I then run from main.py and I get the following error:</p>
 <blockquote>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Traceback (most recent call last):</span><br><span class="line">File <span class="string">&quot;main.py&quot;</span>, line <span class="number">2</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line"> <span class="keyword">from</span> entity <span class="keyword">import</span> Ent</span><br><span class="line">File <span class="string">&quot;.../entity.py&quot;</span>, line <span class="number">5</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line"> <span class="keyword">from</span> physics <span class="keyword">import</span> Physics</span><br><span class="line">File <span class="string">&quot;.../physics.py&quot;</span>, line <span class="number">2</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line"> <span class="keyword">from</span> entity <span class="keyword">import</span> Ent</span><br><span class="line">ImportError: cannot <span class="keyword">import</span> name Ent</span><br></pre></td></tr></table></figure>

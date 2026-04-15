@@ -157,7 +157,11 @@
 
 
 
-<meta name="generator" content="Hexo 8.1.1"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -606,10 +610,9 @@ A：在VS2017中无法编译通过，对此一个合理的解释是：编译器�
           对象内存大小首先确定类的构成：1) 数据成员：内置类型，类类型2) 函数成员：虚函数、非虚函数  
 1）数据成员内置类型大小，字节为单位
 123456char 1 short 2 int 4 long 4 float 4 double 8 
-
 主要有3条规则：
 
-结构体内的成员的首地址相对于结构体首
+结构体内的成员的首地址相对于结构体首地
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1463,12 +1466,11 @@ ios::binary：　以二进制方式打开文件，缺省的方式是文本方式
           数组名与指针区别举例
 12char a[10];char *p;
 
-
 数组名具有常量性，相当于T* const
 数组名作为函数参数时，常量性被摘除，与普通指针相同
 数组名不是变量，不能做左值，因此不能自增自减之类操作
 sizeof(数组名) 得到数组大小，sizeof(指针) 得到指针大小
-&amp
+&amp;
           ...
           <!--noindex-->
           <div class="post-button text-center">

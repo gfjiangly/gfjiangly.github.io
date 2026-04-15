@@ -162,7 +162,11 @@
 
 
 
-<meta name="generator" content="Hexo 8.1.1"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -453,9 +457,6 @@
 <p>Python中变量是由<code>名称+数据</code>构成，如果使用一个仅有名称而无数据的变量（或许不该叫变量）会报NameError：name ‘xxx’ is not defined. 数据是有类型的而名称没有类型。名称和数据可以分离，这个过程必然伴随，名称与其它数据结合。而在C/C++这样的语言中名称是不能与数据分离的，名称即数据。</p>
 <p>名称与数据的第一次绑定过程，即为名称的定义（名称的初始化）。类似于像<code>a, b = b, a</code>这样的变戏法就是一个名称的重新绑定过程，没有新的数据被创建，因此也不需要另外一个名称。如果从有没有新的数据被创建角度观察Python行为，也许很多疑惑就能解开，比如期待被修改的数据没有被修改，不期待修改的数据被修改。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">a = [<span class="number">0</span>, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], <span class="number">4</span>, <span class="number">5</span>]</span><br><span class="line">b = a[<span class="number">1</span>]	<span class="comment"># 没有新数据被创建，修改b也就修改了a</span></span><br><span class="line">c = &#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;jiang&#x27;</span>, <span class="string">&#x27;gender&#x27;</span>: <span class="string">&#x27;man&#x27;</span>, <span class="string">&#x27;index&#x27;</span>: <span class="number">0</span>&#125;</span><br><span class="line">d = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">    c[<span class="string">&#x27;index&#x27;</span>] = i</span><br><span class="line">    d.append(c)</span><br><span class="line"><span class="built_in">print</span>(d)	<span class="comment"># d内的5个字典都相同，这是为什么呢？这是因为没有新的字典被创建</span></span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line">[&#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;jiang&#x27;</span>, <span class="string">&#x27;gender&#x27;</span>: <span class="string">&#x27;man&#x27;</span>, <span class="string">&#x27;index&#x27;</span>: <span class="number">4</span>&#125;, &#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;jiang&#x27;</span>, <span class="string">&#x27;gender&#x27;</span>: <span class="string">&#x27;man&#x27;</span>, <span class="string">&#x27;index&#x27;</span>: <span class="number">4</span>&#125;, &#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;jiang&#x27;</span>, <span class="string">&#x27;gender&#x27;</span>: <span class="string">&#x27;man&#x27;</span>, <span class="string">&#x27;index&#x27;</span>: <span class="number">4</span>&#125;, &#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;jiang&#x27;</span>, <span class="string">&#x27;gender&#x27;</span>: <span class="string">&#x27;man&#x27;</span>, <span class="string">&#x27;index&#x27;</span>: <span class="number">4</span>&#125;, &#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;jiang&#x27;</span>, <span class="string">&#x27;gender&#x27;</span>: <span class="string">&#x27;man&#x27;</span>, <span class="string">&#x27;index&#x27;</span>: <span class="number">4</span>&#125;]</span><br></pre></td></tr></table></figure>
-
-
-
 <p>Q4 嵌套函数</p>
 <p>A4 这是一个比较大的话题，主要讨论变量作用域</p>
 
