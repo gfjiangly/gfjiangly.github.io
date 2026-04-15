@@ -157,11 +157,7 @@
 
 
 
-<!-- hexo injector head_end start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
+<meta name="generator" content="Hexo 8.1.1"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -436,7 +432,8 @@
       
         
           
-          代码覆盖（Code Coverage）是软件测试中的一种度量，描述源代码被测试的比例和程度，所得比例称为代码覆盖率。在做单元测试时，代码覆盖率常常被拿来作为衡量测试好坏的指标，甚至，用代码覆盖率来考核测试任务完成情况，比如，代码覆盖率必须达到80%或90%。于是乎，测试人员费尽心思设计案例覆盖代码。
+          代码覆盖（Code
+Coverage）是软件测试中的一种度量，描述源代码被测试的比例和程度，所得比例称为代码覆盖率。在做单元测试时，代码覆盖率常常被拿来作为衡量测试好坏的指标，甚至，用代码覆盖率来考核测试任务完成情况，比如，代码覆盖率必须达到80%或90%。于是乎，测试人员费尽心思设计案例覆盖代码。
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -605,7 +602,7 @@
         
           
           Q1 函数是一等对象
-A1 
+A1
 
 函数可以作为参数传递
 可以返回函数
@@ -613,7 +610,9 @@ A1
 其表现称得上对象
 
 Q2 函数的参数
-A2 有位置参数、关键字参数（默认参数）、可变参数（元组参数， *args ）以及字典参数（ **kargs ）。其中元组参数和字典参数名称是我自己取的，网上各种叫法都有，我是根
+A2 有位置参数、关键字参数（默认参数）、可变参数（元组参数，
+*args ）以及字典参数（ **kargs
+）。其中元组参数和字典参数名称是我自己取的，网上各种叫法都有，我是根据
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -953,7 +952,8 @@ A2 有位置参数、关键字参数（默认参数）、可变参数（元组�
       
         
           
-          Hook设计描述hook，又称钩子，在C/C++中一般叫做回调函数。钩子是从功能角度描述这种编程模式，回调则是从函数调用时间角度描述的。通常理解的hook是在一个已有的方法上加入一些钩子，使得在该方法执行前或执行后另在做一些额外的处理。如我们熟知的windows系统消息响应事件，鼠标点击对程序产生的
+          Hook设计描述
+hook，又称钩子，在C/C++中一般叫做回调函数。钩子是从功能角度描述这种编程模式，回调则是从函数调用时间角度描述的。通常理解的hook是在一个已有的方法上加入一些钩子，使得在该方法执行前或执行后另在做一些额外的处理。如我们熟知的windows系统消息响应事件，鼠标点击对程序产生
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1124,10 +1124,11 @@ A2 有位置参数、关键字参数（默认参数）、可变参数（元组�
           import导入的两种方式
 
 使用点的方式可以导入，但是不能直接运行。
-使用根目录名称导入，需要有init.py文件，否则不认为文件夹名是一个包
+使用根目录名称导入，需要有__init__.py文件，否则不认为文件夹名是一个包
 
 python模块引用的顺序：
-import引用时首先判断这个module是不是built-in即内建模块，比如import sys。如果是则引入内建模块
+import引用时首先判断这个module是不是built-in即内建模块，比如import
+sys。如果是则引入
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1296,7 +1297,8 @@ import引用时首先判断这个module是不是built-in即内建模块，比如
         
           
           本文主要讨论copy和view或者说deep copy和shallow copy。下文使用深拷贝一词表示复制对象的每一个元素。使用浅拷贝一词表示仅复制对象的浅层。在讨论与Numpy相关知识时使用拷贝表示对数组数据的深拷贝，使用视图一词表示共享数组数据。
-Q1 从list构造array，使用复制还是视
+Q1
+从list构造array，使用复制还是视
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1464,11 +1466,12 @@ Q1 从list构造array，使用复制还是视
       
         
           
-          _ getattr _ object. __getattr__(self, name)是一个对象方法，如果找不到对象的属性时会调用这个方法。
+          _ getattr _ 
+object. __getattr__(self, name)是一个对象方法，如果找不到对象的属性时会调用这个方法。
 这个方法应该返回属性值或者抛出AttributeError异常。
 注意，如果通过正常机制能找到对象属性的话，不会调用__getattr__方法。
 示例
-123
+12
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1636,10 +1639,11 @@ Q1 从list构造array，使用复制还是视
       
         
           
-          init行为当在Python中出现继承的情况时，一定要注意初始化函数init的行为:
+          init行为
+当在Python中出现继承的情况时，一定要注意初始化函数_init_的行为:
 
 如果子类没有定义自己的初始化函数，父类的初始化函数会被默认调用；但是如果要实例化子类的对象，则只能传入父类的初始化函数对应的参数，否则会出错。
-如果子类定义了自己的初始化函数，而在子类中没有显示调用父类的初始化函
+如果子类定义了自己的初始化函数，而在子类中没有显示调用父类的初
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1807,9 +1811,12 @@ Q1 从list构造array，使用复制还是视
       
         
           
-           对象的生命过程：创建、初始化、使用、垃圾回收，不同的阶段由不同的方法（角色）负责执行。 
- __new__ 方法 负责创建对象， 这个对象会传递给 __init__ 方法中定义的 self 参数，以便实例对象可以被正确地初始化。 
- __init__方法 负责对象的初始化 ，系统执行该方法前，该对
+          对象的生命过程：创建、初始化、使用、垃圾回收，不同的阶段由不同的方法（角色）负责执行。
+__new__ 方法 负责创建对象， 这个对象会传递给
+__init__ 方法中定义的 self
+参数，以便实例对象可以被正确地初始化。
+__init__方法 负责对象的初始化
+，系统执行该方法前，该对象已经存在
           ...
           <!--noindex-->
           <div class="post-button text-center">

@@ -105,12 +105,12 @@
 
 
 
-<meta name="description" content="对象的生命过程：创建、初始化、使用、垃圾回收，不同的阶段由不同的方法（角色）负责执行。   __new__ 方法 负责创建对象， 这个对象会传递给 __init__ 方法中定义的 self 参数，以便实例对象可以被正确地初始化。   __init__方法 负责对象的初始化 ，系统执行该方法前，该对象已经存在。 如果 __new__ 方法不返回值（或者说返回 None）那么 __init__ 将不">
+<meta name="description" content="对象的生命过程：创建、初始化、使用、垃圾回收，不同的阶段由不同的方法（角色）负责执行。 __new__ 方法 负责创建对象， 这个对象会传递给 __init__ 方法中定义的 self 参数，以便实例对象可以被正确地初始化。 __init__方法 负责对象的初始化 ，系统执行该方法前，该对象已经存在。 如果 __new__ 方法不返回值（或者说返回 None）那么 __init__ 将不会得到调用">
 <meta property="og:type" content="article">
 <meta property="og:title" content="对象创建过程">
 <meta property="og:url" content="https://gfjiangly.github.io/Python/object_generate_process.html">
 <meta property="og:site_name" content="jiang">
-<meta property="og:description" content="对象的生命过程：创建、初始化、使用、垃圾回收，不同的阶段由不同的方法（角色）负责执行。   __new__ 方法 负责创建对象， 这个对象会传递给 __init__ 方法中定义的 self 参数，以便实例对象可以被正确地初始化。   __init__方法 负责对象的初始化 ，系统执行该方法前，该对象已经存在。 如果 __new__ 方法不返回值（或者说返回 None）那么 __init__ 将不">
+<meta property="og:description" content="对象的生命过程：创建、初始化、使用、垃圾回收，不同的阶段由不同的方法（角色）负责执行。 __new__ 方法 负责创建对象， 这个对象会传递给 __init__ 方法中定义的 self 参数，以便实例对象可以被正确地初始化。 __init__方法 负责对象的初始化 ，系统执行该方法前，该对象已经存在。 如果 __new__ 方法不返回值（或者说返回 None）那么 __init__ 将不会得到调用">
 <meta property="og:locale">
 <meta property="article:published_time" content="2019-12-21T14:53:00.000Z">
 <meta property="article:modified_time" content="2026-03-03T13:00:27.386Z">
@@ -162,11 +162,7 @@
 
 
 
-<!-- hexo injector head_end start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
+<meta name="generator" content="Hexo 8.1.1"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -441,16 +437,26 @@
       
 
       
-        <p> 对象的生命过程：创建、初始化、使用、垃圾回收，不同的阶段由不同的方法（角色）负责执行。 </p>
-<p> <code>__new__</code> 方法 负责创建对象， 这个对象会传递给 <code>__init__</code> 方法中定义的 self 参数，以便实例对象可以被正确地初始化。 </p>
-<p> <code>__init__</code>方法 负责对象的初始化 ，系统执行该方法前，该对象已经存在。 如果 <code>__new__</code> 方法不返回值（或者说返回 None）那么 <code>__init__</code> 将不会得到调用。此外，Python 还规定，<code>__init__</code> 只能返回 None 值，否则报错。</p>
-<p> <code>__call__</code> 方法，不得不先提到一个概念，就是<em>可调用对象（callable）</em>，我们平时自定义的函数、内置函数和类都属于可调用对象，但凡是可以把一对括号<code>()</code>应用到某个对象身上都可称之为可调用对象，判断对象是否为可调用对象可以用函数 <code>callable</code> 。 如果在类中实现了 <code>__call__</code> 方法，那么实例对象也将成为一个可调用对象</p>
+        <p>对象的生命过程：创建、初始化、使用、垃圾回收，不同的阶段由不同的方法（角色）负责执行。</p>
+<p><code>__new__</code> 方法 负责创建对象， 这个对象会传递给
+<code>__init__</code> 方法中定义的 self
+参数，以便实例对象可以被正确地初始化。</p>
+<p><code>__init__</code>方法 负责对象的初始化
+，系统执行该方法前，该对象已经存在。 如果 <code>__new__</code>
+方法不返回值（或者说返回 None）那么 <code>__init__</code>
+将不会得到调用。此外，Python 还规定，<code>__init__</code> 只能返回 None
+值，否则报错。</p>
+<p><code>__call__</code>
+方法，不得不先提到一个概念，就是<em>可调用对象（callable）</em>，我们平时自定义的函数、内置函数和类都属于可调用对象，但凡是可以把一对括号<code>()</code>应用到某个对象身上都可称之为可调用对象，判断对象是否为可调用对象可以用函数
+<code>callable</code> 。 如果在类中实现了 <code>__call__</code>
+方法，那么实例对象也将成为一个可调用对象</p>
 <p>上面三个方法都称为魔术方法，因为这些方法不是由用户调用的，而是由解释器调用的。</p>
-<p>此外，对象的回收工作是由GC(Garbage Collection)完成的，GC也是解释器的一部分。现代语言的垃圾回收算法都可以写好多内容。</p>
+<p>此外，对象的回收工作是由GC(Garbage
+Collection)完成的，GC也是解释器的一部分。现代语言的垃圾回收算法都可以写好多内容。</p>
 <p>参考：</p>
 <ul>
-<li><a href="https://foofish.net/magic-method.html">https://foofish.net/magic-method.html</a></li>
-<li><a href="https://www.jianshu.com/p/1e375fb40506">https://www.jianshu.com/p/1e375fb40506</a></li>
+<li>https://foofish.net/magic-method.html</li>
+<li>https://www.jianshu.com/p/1e375fb40506</li>
 </ul>
 
       
@@ -547,7 +553,7 @@
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
     <a href="https://gfjiangly.github.io/Python/object_generate_process.html" title="对象创建过程">https://gfjiangly.github.io/Python/object_generate_process.html</a>
-    <span class="copy-path"  title="点击复制引用链接"><i style="cursor: pointer" class="fa fa-clipboard" data-clipboard-text="['s Blog | 对象创建过程](https://gfjiangly.github.io/Python/object_generate_process.html)"  aria-label="post.copy_success"></i></span>
+    <span class="copy-path"  title="点击复制引用链接"><i style="cursor: pointer" class="fa fa-clipboard" data-clipboard-text="[Jiang.G.F's Blog | 对象创建过程](https://gfjiangly.github.io/Python/object_generate_process.html)"  aria-label="复制成功！"></i></span>
   </li>
 
   <!-- 版权声明 -->

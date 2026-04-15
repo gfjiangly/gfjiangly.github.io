@@ -105,12 +105,12 @@
 
 
 
-<meta name="description" content="一、临时量与临时对象临时量：  内置类型生成的临时量是常量（临时量，寄存器带出来）。  自定义类型生成的临时量是变量 ，在内存中。   临时对象： 临时对象是系统临时分配的对象，在没主动声明所需对象而又使用其功能时产生的 注意: 临时对象的生存周期只在本条语句。 二、哪些情况产生临时量2.1 调用构造函数生成的对象123456789101112class A&#123;public:	A(int">
+<meta name="description" content="一、临时量与临时对象 临时量：  内置类型生成的临时量是常量（临时量，寄存器带出来）。 自定义类型生成的临时量是变量 ，在内存中。  临时对象： 临时对象是系统临时分配的对象，在没主动声明所需对象而又使用其功能时产生的 注意: 临时对象的生存周期只在本条语句。 二、哪些情况产生临时量 2.1 调用构造函数生成的对象 123456789101112class A&#123;public:	A(int">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【C++】临时对象">
 <meta property="og:url" content="https://gfjiangly.github.io/C++/temporary_object.html">
 <meta property="og:site_name" content="jiang">
-<meta property="og:description" content="一、临时量与临时对象临时量：  内置类型生成的临时量是常量（临时量，寄存器带出来）。  自定义类型生成的临时量是变量 ，在内存中。   临时对象： 临时对象是系统临时分配的对象，在没主动声明所需对象而又使用其功能时产生的 注意: 临时对象的生存周期只在本条语句。 二、哪些情况产生临时量2.1 调用构造函数生成的对象123456789101112class A&#123;public:	A(int">
+<meta property="og:description" content="一、临时量与临时对象 临时量：  内置类型生成的临时量是常量（临时量，寄存器带出来）。 自定义类型生成的临时量是变量 ，在内存中。  临时对象： 临时对象是系统临时分配的对象，在没主动声明所需对象而又使用其功能时产生的 注意: 临时对象的生存周期只在本条语句。 二、哪些情况产生临时量 2.1 调用构造函数生成的对象 123456789101112class A&#123;public:	A(int">
 <meta property="og:locale">
 <meta property="article:published_time" content="2020-02-01T16:52:00.000Z">
 <meta property="article:modified_time" content="2026-03-03T13:00:27.383Z">
@@ -162,11 +162,7 @@
 
 
 
-<!-- hexo injector head_end start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
+<meta name="generator" content="Hexo 8.1.1"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -441,31 +437,37 @@
       
 
       
-        <h2 id="u4E00_u3001_u4E34_u65F6_u91CF_u4E0E_u4E34_u65F6_u5BF9_u8C61"><a href="#u4E00_u3001_u4E34_u65F6_u91CF_u4E0E_u4E34_u65F6_u5BF9_u8C61" class="headerlink" title="一、临时量与临时对象"></a>一、临时量与临时对象</h2><p>临时量：</p>
-<ol>
-<li><p>内置类型生成的临时量是常量（临时量，寄存器带出来）。</p>
-</li>
-<li><p>自定义类型生成的临时量是变量 ，在内存中。</p>
-</li>
+        <h2 id="一临时量与临时对象">一、临时量与临时对象</h2>
+<p>临时量：</p>
+<ol type="1">
+<li><p>内置类型生成的临时量是常量（临时量，寄存器带出来）。</p></li>
+<li><p>自定义类型生成的临时量是变量 ，在内存中。</p></li>
 </ol>
 <p>临时对象：</p>
 <p>临时对象是系统临时分配的对象，在没主动声明所需对象而又使用其功能时产生的</p>
 <p>注意: 临时对象的生存周期只在本条语句。</p>
-<h2 id="u4E8C_u3001_u54EA_u4E9B_u60C5_u51B5_u4EA7_u751F_u4E34_u65F6_u91CF"><a href="#u4E8C_u3001_u54EA_u4E9B_u60C5_u51B5_u4EA7_u751F_u4E34_u65F6_u91CF" class="headerlink" title="二、哪些情况产生临时量"></a>二、哪些情况产生临时量</h2><h3 id="2-1__u8C03_u7528_u6784_u9020_u51FD_u6570_u751F_u6210_u7684_u5BF9_u8C61"><a href="#2-1__u8C03_u7528_u6784_u9020_u51FD_u6570_u751F_u6210_u7684_u5BF9_u8C61" class="headerlink" title="2.1 调用构造函数生成的对象"></a>2.1 调用构造函数生成的对象</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">A</span>(<span class="type">int</span> x);</span><br><span class="line">	<span class="comment">// explicit A(int x);</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">doSomething</span><span class="params">(A aObject)</span></span>;</span><br><span class="line">A aObj;  <span class="comment">// 显示对象</span></span><br><span class="line"><span class="built_in">doSomething</span>(aObj);  </span><br><span class="line"><span class="built_in">doSomething</span>(<span class="number">28</span>);  <span class="comment">// 产生了隐式临时对象，编译器调用A(28)将28隐式构造成A类对象</span></span><br><span class="line"><span class="built_in">doSomething</span>(<span class="built_in">A</span>(<span class="number">28</span>));  <span class="comment">// 产生了显示临时对象</span></span><br></pre></td></tr></table></figure>
+<h2 id="二哪些情况产生临时量">二、哪些情况产生临时量</h2>
+<h3 id="调用构造函数生成的对象">2.1 调用构造函数生成的对象</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">A</span>(<span class="type">int</span> x);</span><br><span class="line">	<span class="comment">// explicit A(int x);</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">doSomething</span><span class="params">(A aObject)</span></span>;</span><br><span class="line">A aObj;  <span class="comment">// 显示对象</span></span><br><span class="line"><span class="built_in">doSomething</span>(aObj);  </span><br><span class="line"><span class="built_in">doSomething</span>(<span class="number">28</span>);  <span class="comment">// 产生了隐式临时对象，编译器调用A(28)将28隐式构造成A类对象</span></span><br><span class="line"><span class="built_in">doSomething</span>(<span class="built_in">A</span>(<span class="number">28</span>));  <span class="comment">// 产生了显示临时对象</span></span><br></pre></td></tr></table></figure>
 <p>如果不想让编译器隐式调用构造函数，只需用explicit修饰只需要传一个参数的构造函数。</p>
-<h2 id="u4E09_u3001_u4E34_u65F6_u53D8_u91CF_u7684_u5F15_u7528"><a href="#u4E09_u3001_u4E34_u65F6_u53D8_u91CF_u7684_u5F15_u7528" class="headerlink" title="三、临时变量的引用"></a>三、临时变量的引用</h2><h3 id="3-1__u7981_u6B62_u975E_u5E38_u91CF_u5F15_u7528"><a href="#3-1__u7981_u6B62_u975E_u5E38_u91CF_u5F15_u7528" class="headerlink" title="3.1 禁止非常量引用"></a>3.1 禁止非常量引用</h3><p>《Effective C++ 第三版》第二十一条规劝，返回对象时，别妄想返回其引用。根源在于：临时对象的生命周期只在本语句。函数返回时，临时变量会被销毁，将引用一个被销毁的对象，这种行为未定义。</p>
+<h2 id="三临时变量的引用">三、临时变量的引用</h2>
+<h3 id="禁止非常量引用">3.1 禁止非常量引用</h3>
+<p>《Effective C++
+第三版》第二十一条规劝，返回对象时，别妄想返回其引用。根源在于：临时对象的生命周期只在本语句。函数返回时，临时变量会被销毁，将引用一个被销毁的对象，这种行为未定义。</p>
 <p>在VS2013下测试，函数参数为非常量引用指向临时对象：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">f1</span><span class="params">(string &amp;str)</span> </span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, str.<span class="built_in">c_str</span>());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">f1</span>(<span class="string">&quot;hello jiang&quot;</span>);  <span class="comment">// 错误，&quot;hello jiang&quot;被转成string临时对象，无法非常量引用临时对象</span></span><br></pre></td></tr></table></figure>
 <p>上面代码无法编译通过，说明编译器明确指出了这种写法是错误的。错误前置出现在编译期间，较好防范。</p>
 <p>在VS2013下测试，函数返回值为非常量引用指向临时对象：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> &amp; <span class="title">f2</span><span class="params">(<span class="type">void</span>)</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> t = <span class="number">3</span>;</span><br><span class="line">	<span class="keyword">return</span> t;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> &amp;a = <span class="built_in">f2</span>();  <span class="comment">// 编译通过</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>虽然上面代码编译通过了，但是存在潜在风险，程序行为未定义。这种情况尤为注意，因为错误将在运行期出现。其实我好奇的是C++标准为什么不延长这种情况下，临时变量的生命周期。</p>
-<h3 id="3-2__u5E38_u91CF_u5F15_u7528"><a href="#3-2__u5E38_u91CF_u5F15_u7528" class="headerlink" title="3.2 常量引用"></a>3.2 常量引用</h3><p>临时变量是由编译器生成的，C++语言规范没规定编译器生成临时变量的规则，程序员无法得知由编译器生成的临时变量的名字，程序员无法访问那个临时变量。这意味着，以引用的方式传递一个临时变量做为函数参数，如果函数内部对此临时变量做了修改，那么函数返回后，程序员无法获得函数对临时变量的修改。函数对临时变量所做出的所有更改，都将丢失。C++标准为防止给常量或临时变量（只有瞬间的生命周期）赋值(易产生bug)，只许使用const引用之。</p>
+<h3 id="常量引用">3.2 常量引用</h3>
+<p>临时变量是由编译器生成的，C++语言规范没规定编译器生成临时变量的规则，程序员无法得知由编译器生成的临时变量的名字，程序员无法访问那个临时变量。这意味着，以引用的方式传递一个临时变量做为函数参数，如果函数内部对此临时变量做了修改，那么函数返回后，程序员无法获得函数对临时变量的修改。函数对临时变量所做出的所有更改，都将丢失。C++标准为防止给常量或临时变量（只有瞬间的生命周期）赋值(易产生bug)，只许使用const引用之。</p>
 <p>在VS2013下测试，函数参数为常量引用指向临时对象：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">f3</span><span class="params">(<span class="type">const</span> string &amp;str)</span> </span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, str.<span class="built_in">c_str</span>());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">f3</span>(<span class="string">&quot;hello jiang&quot;</span>);  <span class="comment">// 允许，&quot;hello jiang&quot;被隐式转成string临时对象，使用常量引用之。</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>在VS2013下测试，函数返回值为常量引用指向临时对象：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">const</span> <span class="type">int</span> &amp; <span class="title">f4</span><span class="params">(<span class="type">void</span>)</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> t = <span class="number">32</span>;</span><br><span class="line">    <span class="keyword">return</span> t;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> &amp;a = <span class="built_in">f4</span>();  <span class="comment">// 允许</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="u56DB_u3001_u4F18_u5316_u5305_u542B_u4E34_u65F6_u5BF9_u8C61_u7684_u7A0B_u5E8F"><a href="#u56DB_u3001_u4F18_u5316_u5305_u542B_u4E34_u65F6_u5BF9_u8C61_u7684_u7A0B_u5E8F" class="headerlink" title="四、优化包含临时对象的程序"></a>四、优化包含临时对象的程序</h2><ul>
+<h2 id="四优化包含临时对象的程序">四、优化包含临时对象的程序</h2>
+<ul>
 <li>函数调用传对象时，如果可以，尽量按对象引用来传递，避免构造临时对象</li>
 <li>函数调用时，按对象引用来传递，如果不需要修改对象，使用const引用，以避免无意修改对象。</li>
 <li>返回对象时，别妄想返回其引用</li>
@@ -566,7 +568,7 @@
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
     <a href="https://gfjiangly.github.io/C++/temporary_object.html" title="【C++】临时对象">https://gfjiangly.github.io/C++/temporary_object.html</a>
-    <span class="copy-path"  title="点击复制引用链接"><i style="cursor: pointer" class="fa fa-clipboard" data-clipboard-text="['s Blog | 【C++】临时对象](https://gfjiangly.github.io/C++/temporary_object.html)"  aria-label="post.copy_success"></i></span>
+    <span class="copy-path"  title="点击复制引用链接"><i style="cursor: pointer" class="fa fa-clipboard" data-clipboard-text="[Jiang.G.F's Blog | 【C++】临时对象](https://gfjiangly.github.io/C++/temporary_object.html)"  aria-label="复制成功！"></i></span>
   </li>
 
   <!-- 版权声明 -->
@@ -778,7 +780,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E00_u3001_u4E34_u65F6_u91CF_u4E0E_u4E34_u65F6_u5BF9_u8C61"><span class="nav-number">1.</span> <span class="nav-text">一、临时量与临时对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E8C_u3001_u54EA_u4E9B_u60C5_u51B5_u4EA7_u751F_u4E34_u65F6_u91CF"><span class="nav-number">2.</span> <span class="nav-text">二、哪些情况产生临时量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1__u8C03_u7528_u6784_u9020_u51FD_u6570_u751F_u6210_u7684_u5BF9_u8C61"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 调用构造函数生成的对象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E09_u3001_u4E34_u65F6_u53D8_u91CF_u7684_u5F15_u7528"><span class="nav-number">3.</span> <span class="nav-text">三、临时变量的引用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1__u7981_u6B62_u975E_u5E38_u91CF_u5F15_u7528"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 禁止非常量引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2__u5E38_u91CF_u5F15_u7528"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 常量引用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u56DB_u3001_u4F18_u5316_u5305_u542B_u4E34_u65F6_u5BF9_u8C61_u7684_u7A0B_u5E8F"><span class="nav-number">4.</span> <span class="nav-text">四、优化包含临时对象的程序</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%B8%B4%E6%97%B6%E9%87%8F%E4%B8%8E%E4%B8%B4%E6%97%B6%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.</span> <span class="nav-text">一、临时量与临时对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E4%BA%A7%E7%94%9F%E4%B8%B4%E6%97%B6%E9%87%8F"><span class="nav-number">2.</span> <span class="nav-text">二、哪些情况产生临时量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E7%94%9F%E6%88%90%E7%9A%84%E5%AF%B9%E8%B1%A1"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 调用构造函数生成的对象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E4%B8%B4%E6%97%B6%E5%8F%98%E9%87%8F%E7%9A%84%E5%BC%95%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">三、临时变量的引用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A6%81%E6%AD%A2%E9%9D%9E%E5%B8%B8%E9%87%8F%E5%BC%95%E7%94%A8"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 禁止非常量引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E9%87%8F%E5%BC%95%E7%94%A8"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 常量引用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E4%BC%98%E5%8C%96%E5%8C%85%E5%90%AB%E4%B8%B4%E6%97%B6%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%A8%8B%E5%BA%8F"><span class="nav-number">4.</span> <span class="nav-text">四、优化包含临时对象的程序</span></a></li></ol></div>
             
 
           </div>

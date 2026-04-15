@@ -105,12 +105,12 @@
 
 
 
-<meta name="description" content="问题描述给定一个包含红色、白色和蓝色，一共 n 个元素的数组，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。 此题中，我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色。 注意: 不能使用代码库中的排序函数来解决这道题。 示例: 12输入: [2,0,2,1,1,0]输出: [0,0,1,1,2,2] 进阶：  一直观的解决方案是使用计数排序的两趟扫描算法。首先">
+<meta name="description" content="问题描述 给定一个包含红色、白色和蓝色，一共 n 个元素的数组，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。 此题中，我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色。 注意: 不能使用代码库中的排序函数来解决这道题。 示例: 12输入: [2,0,2,1,1,0]输出: [0,0,1,1,2,2] 进阶：  一直观的解决方案是使用计数排序的两趟扫描算法。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LeetCode之75. 颜色分类">
 <meta property="og:url" content="https://gfjiangly.github.io/leetcode/leetcode_75_sort-colors.html">
 <meta property="og:site_name" content="jiang">
-<meta property="og:description" content="问题描述给定一个包含红色、白色和蓝色，一共 n 个元素的数组，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。 此题中，我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色。 注意: 不能使用代码库中的排序函数来解决这道题。 示例: 12输入: [2,0,2,1,1,0]输出: [0,0,1,1,2,2] 进阶：  一直观的解决方案是使用计数排序的两趟扫描算法。首先">
+<meta property="og:description" content="问题描述 给定一个包含红色、白色和蓝色，一共 n 个元素的数组，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。 此题中，我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色。 注意: 不能使用代码库中的排序函数来解决这道题。 示例: 12输入: [2,0,2,1,1,0]输出: [0,0,1,1,2,2] 进阶：  一直观的解决方案是使用计数排序的两趟扫描算法。">
 <meta property="og:locale">
 <meta property="article:published_time" content="2020-01-14T03:37:00.000Z">
 <meta property="article:modified_time" content="2026-03-03T13:00:27.397Z">
@@ -162,11 +162,7 @@
 
 
 
-<!-- hexo injector head_end start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
+<meta name="generator" content="Hexo 8.1.1"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -441,17 +437,21 @@
       
 
       
-        <h2 id="u95EE_u9898_u63CF_u8FF0"><a href="#u95EE_u9898_u63CF_u8FF0" class="headerlink" title="问题描述"></a>问题描述</h2><p>给定一个包含红色、白色和蓝色，一共 n 个元素的数组，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。</p>
+        <h2 id="问题描述">问题描述</h2>
+<p>给定一个包含红色、白色和蓝色，一共 n
+个元素的数组，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。</p>
 <p>此题中，我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色。</p>
 <p>注意: 不能使用代码库中的排序函数来解决这道题。</p>
 <p>示例:</p>
 <figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: <span class="string">[2,0,2,1,1,0]</span></span><br><span class="line">输出: <span class="string">[0,0,1,1,2,2]</span></span><br></pre></td></tr></table></figure>
 <p>进阶：</p>
 <ul>
-<li>一直观的解决方案是使用计数排序的两趟扫描算法。<br>首先，迭代计算出0、1 和 2 元素的个数，然后按照0、1、2的排序，重写当前数组。</li>
+<li>一直观的解决方案是使用计数排序的两趟扫描算法。 首先，迭代计算出0、1
+和 2 元素的个数，然后按照0、1、2的排序，重写当前数组。</li>
 <li>你能想出一个仅使用常数空间的一趟扫描算法吗？</li>
 </ul>
-<h2 id="u4E09_u5411_u5207_u5206"><a href="#u4E09_u5411_u5207_u5206" class="headerlink" title="三向切分"></a>三向切分</h2><p>这道题在边界条件上花费了很多时间。这个算法太容易写错了。注意与《算法》第四版189页代码的不同，书上v选取了第一个元素，所以，curr初始值为lt+1，任何时刻nums[lt]都为v，因此与nums[lt]交换后curr可向前移动。</p>
+<h2 id="三向切分">三向切分</h2>
+<p>这道题在边界条件上花费了很多时间。这个算法太容易写错了。注意与《算法》第四版189页代码的不同，书上v选取了第一个元素，所以，curr初始值为lt+1，任何时刻nums[lt]都为v，因此与nums[lt]交换后curr可向前移动。</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">exch</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> i, <span class="type">int</span> j)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> temp = nums[i];</span><br><span class="line">        nums[i] = nums[j];</span><br><span class="line">        nums[j] = temp;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">sortColors</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> v = <span class="number">1</span>;</span><br><span class="line">        <span class="type">int</span> lt = <span class="number">0</span>;  <span class="comment">// nums[0..lt-1] &lt; 1, nums[lt] &lt;= 1, 因此与nums[lt]交换后curr可向前移动</span></span><br><span class="line">        <span class="type">int</span> gt = nums.<span class="built_in">size</span>()<span class="number">-1</span>;</span><br><span class="line">        <span class="type">int</span> curr = lt;	<span class="comment">// 开始与lt必须指向相同位置，保证不漏排任何一个元素</span></span><br><span class="line">        <span class="keyword">while</span> (curr &lt;= gt) &#123;</span><br><span class="line">            <span class="type">int</span> c = nums[curr] - v;</span><br><span class="line">            <span class="keyword">if</span> (c &gt; <span class="number">0</span>) <span class="built_in">exch</span>(nums, curr, gt--);  <span class="comment">// 这里curr不能加加，否则就漏排与curr交换了的nums[gt]</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (c &lt; <span class="number">0</span>) <span class="built_in">exch</span>(nums, curr++, lt++);  <span class="comment">// 这里curr一定要加加，否则循环可能前进不动</span></span><br><span class="line">            <span class="keyword">else</span> curr++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
       
@@ -548,7 +548,7 @@
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
     <a href="https://gfjiangly.github.io/leetcode/leetcode_75_sort-colors.html" title="LeetCode之75. 颜色分类">https://gfjiangly.github.io/leetcode/leetcode_75_sort-colors.html</a>
-    <span class="copy-path"  title="点击复制引用链接"><i style="cursor: pointer" class="fa fa-clipboard" data-clipboard-text="['s Blog | LeetCode之75. 颜色分类](https://gfjiangly.github.io/leetcode/leetcode_75_sort-colors.html)"  aria-label="post.copy_success"></i></span>
+    <span class="copy-path"  title="点击复制引用链接"><i style="cursor: pointer" class="fa fa-clipboard" data-clipboard-text="[Jiang.G.F's Blog | LeetCode之75. 颜色分类](https://gfjiangly.github.io/leetcode/leetcode_75_sort-colors.html)"  aria-label="复制成功！"></i></span>
   </li>
 
   <!-- 版权声明 -->
@@ -760,7 +760,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u95EE_u9898_u63CF_u8FF0"><span class="nav-number">1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E09_u5411_u5207_u5206"><span class="nav-number">2.</span> <span class="nav-text">三向切分</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E5%90%91%E5%88%87%E5%88%86"><span class="nav-number">2.</span> <span class="nav-text">三向切分</span></a></li></ol></div>
             
 
           </div>

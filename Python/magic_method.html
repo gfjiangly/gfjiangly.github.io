@@ -105,12 +105,12 @@
 
 
 
-<meta name="description" content="_ getattr _ object. __getattr__(self, name)是一个对象方法，如果找不到对象的属性时会调用这个方法。 这个方法应该返回属性值或者抛出AttributeError异常。 注意，如果通过正常机制能找到对象属性的话，不会调用__getattr__方法。 示例 1234567891011&gt;&gt;&gt; class Frob:...     def __in">
+<meta name="description" content="_ getattr _  object. __getattr__(self, name)是一个对象方法，如果找不到对象的属性时会调用这个方法。 这个方法应该返回属性值或者抛出AttributeError异常。 注意，如果通过正常机制能找到对象属性的话，不会调用__getattr__方法。 示例 1234567891011&gt;&gt;&gt; class Frob:...     def __i">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Python背后的方法">
 <meta property="og:url" content="https://gfjiangly.github.io/Python/magic_method.html">
 <meta property="og:site_name" content="jiang">
-<meta property="og:description" content="_ getattr _ object. __getattr__(self, name)是一个对象方法，如果找不到对象的属性时会调用这个方法。 这个方法应该返回属性值或者抛出AttributeError异常。 注意，如果通过正常机制能找到对象属性的话，不会调用__getattr__方法。 示例 1234567891011&gt;&gt;&gt; class Frob:...     def __in">
+<meta property="og:description" content="_ getattr _  object. __getattr__(self, name)是一个对象方法，如果找不到对象的属性时会调用这个方法。 这个方法应该返回属性值或者抛出AttributeError异常。 注意，如果通过正常机制能找到对象属性的话，不会调用__getattr__方法。 示例 1234567891011&gt;&gt;&gt; class Frob:...     def __i">
 <meta property="og:locale">
 <meta property="article:published_time" content="2019-12-21T14:55:00.000Z">
 <meta property="article:modified_time" content="2026-03-03T13:00:27.385Z">
@@ -162,11 +162,7 @@
 
 
 
-<!-- hexo injector head_end start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
+<meta name="generator" content="Hexo 8.1.1"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -441,13 +437,15 @@
       
 
       
-        <h3 id="getattr"><a href="#getattr" class="headerlink" title="_ getattr _ "></a>_ <strong>getattr _ </strong></h3><p><code>object. __getattr__(self, name)</code>是一个对象方法，如果找不到对象的属性时会调用这个方法。</p>
+        <h3 id="getattr-_">_ <strong>getattr _ </strong></h3>
+<p><code>object. __getattr__(self, name)</code>是一个对象方法，如果找不到对象的属性时会调用这个方法。</p>
 <p>这个方法应该返回属性值或者抛出<code>AttributeError</code>异常。</p>
 <p>注意，如果通过正常机制能找到对象属性的话，不会调用<code>__getattr__</code>方法。</p>
 <p><strong>示例</strong></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">class</span> <span class="title class_">Frob</span>:</span><br><span class="line"><span class="meta">... </span>    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, bamf</span>):</span><br><span class="line"><span class="meta">... </span>        <span class="variable language_">self</span>.bamf = bamf</span><br><span class="line"><span class="meta">... </span>    <span class="keyword">def</span> <span class="title function_">__getattr__</span>(<span class="params">self, name</span>):</span><br><span class="line"><span class="meta">... </span>        <span class="keyword">return</span> <span class="string">&#x27;Frob does not have `&#123;&#125;` attribute.&#x27;</span>.<span class="built_in">format</span>(<span class="built_in">str</span>(name))</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>f = Frob(<span class="string">&quot;bamf&quot;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>f.bar</span><br><span class="line"><span class="string">&#x27;Frob does not have `bar` attribute.&#x27;</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>f.bamf</span><br><span class="line"><span class="string">&#x27;bamf&#x27;</span></span><br></pre></td></tr></table></figure>
 <p>这个方法可以实现用属性（键）的方式访问字典值。mmcv中Config类即是这种用法的典范。</p>
-<h3 id="getattr-1"><a href="#getattr-1" class="headerlink" title="getattr"></a>getattr</h3><p><code>getattr (object, name[, default])</code>是Python的内置函数之一，它的作用是获取对象的属性。</p>
+<h3 id="getattr">getattr</h3>
+<p><code>getattr (object, name[, default])</code>是Python的内置函数之一，它的作用是获取对象的属性。</p>
 <ul>
 <li>object 对象</li>
 <li>name 属性名</li>
@@ -458,7 +456,7 @@
 <p><code>__getitem__</code></p>
 <p><code>[]</code>运算符调用的函数</p>
 <p>参看：</p>
-<p><a href="https://www.jianshu.com/p/219e962e4f35">https://www.jianshu.com/p/219e962e4f35</a></p>
+<p>https://www.jianshu.com/p/219e962e4f35</p>
 
       
     </div>
@@ -554,7 +552,7 @@
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
     <a href="https://gfjiangly.github.io/Python/magic_method.html" title="Python背后的方法">https://gfjiangly.github.io/Python/magic_method.html</a>
-    <span class="copy-path"  title="点击复制引用链接"><i style="cursor: pointer" class="fa fa-clipboard" data-clipboard-text="['s Blog | Python背后的方法](https://gfjiangly.github.io/Python/magic_method.html)"  aria-label="post.copy_success"></i></span>
+    <span class="copy-path"  title="点击复制引用链接"><i style="cursor: pointer" class="fa fa-clipboard" data-clipboard-text="[Jiang.G.F's Blog | Python背后的方法](https://gfjiangly.github.io/Python/magic_method.html)"  aria-label="复制成功！"></i></span>
   </li>
 
   <!-- 版权声明 -->
@@ -766,7 +764,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#getattr"><span class="nav-number">1.</span> <span class="nav-text">_ getattr _ </span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getattr-1"><span class="nav-number">2.</span> <span class="nav-text">getattr</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#getattr-_"><span class="nav-number">1.</span> <span class="nav-text">_ getattr _ </span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getattr"><span class="nav-number">2.</span> <span class="nav-text">getattr</span></a></li></ol></div>
             
 
           </div>

@@ -157,11 +157,7 @@
 
 
 
-<!-- hexo injector head_end start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
+<meta name="generator" content="Hexo 8.1.1"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -448,8 +444,14 @@
         
           
           背包模型从形式上看属于二维DP。
-0-1背包问题问题描述： 有 N 个物品和一个容量为 V 的背包， 放入第 i 个物品耗费的空间是Ci，得到的价值是Wi。求解价值总和最大值？（或求解将哪些物品装入背包可使价值总和最大 ）
-状态定义： f[i][v]表示 i 个物品恰好放入一个容量为 v 的背包可以
+0-1背包问题
+问题描述： 有 N 个物品和一个容量为 V 的背包， 放入第
+i
+个物品耗费的空间是Ci，得到的价值是Wi。求解价值总和最大值？（或求解将哪些物品装入背包可使价值总和最大
+）
+状态定义： f[i][v]表示 i
+个物品恰好放入一个容量为 v
+的背包可
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -791,7 +793,8 @@
       
         
           
-          分支123456789101112131415161718# 创建名为xxx的新分支，并切到新分支git checkout -b xxx# checkout -b 是复合命令，一个是创建，一个是切换# 创建分支git branch dev# 切换分支git checkout dev# 查看当前所有的
+          分支
+123456789101112131415161718# 创建名为xxx的新分支，并切到新分支git checkout -b xxx# checkout -b 是复合命令，一个是创建，一个是切换# 创建分支git branch dev# 切换分支git checkout dev# 查看当前所有
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -959,13 +962,14 @@
       
         
           
-          CUDA程序执行流程典型的CUDA程序的执行流程如下：
+          CUDA程序执行流程
+典型的CUDA程序的执行流程如下：
 
 分配host内存，并进行数据初始化；
 分配device内存，并从host将数据拷贝到device上；
 调用CUDA的核函数在device上完成指定的运算；
 将device上的运算结果拷贝到host上；
-释放device和host上分配的内存。
+释放device和host上分配的内存
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1144,7 +1148,10 @@
       
         
           
-          里氏替换原则(Liskov Substitution Principle，LSP)是面向对象设计的基本原则之一，最早于1988年由麻省理工学院 Barbara Liskov 女士（里氏）提出。LSP是继承复用的基石，只有当派生类可以替换掉基类，软件单位的功能不改变时，基类才能真正被复用，而派生类也能
+          里氏替换原则(Liskov Substitution
+Principle，LSP)是面向对象设计的基本原则之一，最早于1988年由麻省理工学院
+Barbara Liskov
+女士（里氏）提出。LSP是继承复用的基石，只有当派生类可以替换掉基类，软件单位的功能不改变时，基类才能真正被复用，而派生类也能
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1313,10 +1320,13 @@
         
           
           模块导入的两种方式
+
 使用点的方式可以导入，但是不能直接运行。
 使用根目录名称导入，需要有__init__.py文件，否则不认为文件夹名是一个包
 
-模块引用的顺序import时首先判断这个module是不是built-in即内建模块，比如import sys。如果是，则引入内建模块；如果不是，则在一个
+模块引用的顺序
+import时首先判断这个module是不是built-in即内建模块，比如import
+sys。如果是，则引入内建模块；如果不是，则在
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1485,7 +1495,8 @@
         
           
           筛选用错了，后果很严重！
-特定值筛选12345678910import numpy as np# 当数组是一维数组时，返回的值是一维的索引，所以只有一组索引数组arr = np.array([2, 1, 1, 134, 45, 3, 546, 1])print(np.where(arr == 3))
+特定值筛选
+12345678910import numpy as np# 当数组是一维数组时，返回的值是一维的索引，所以只有一组索引数组arr = np.array([2, 1, 1, 134, 45, 3, 546, 1])print(np.where(arr == 3)
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1654,7 +1665,8 @@
         
           
           本页面持续更新…
-空数组拼接问题1234567import numpy as np# 报错# ValueError: all the input array dimensions except for the concatenation axis must match exactlynp.vstac
+空数组拼接问题
+1234567import numpy as np# 报错# ValueError: all the input array dimensions except for the concatenation axis must match exactlynp.vsta
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1833,8 +1845,9 @@
       
         
           
-          记一次诡异的错误运行Flask web服务，客户端请求一直出现下面的连接错误
-1requests.exceptions.ConnectionError: HTTPConnectionPool(host=&#x27;ip&#x27;, port=666): Max retries exceeded w
+          记一次诡异的错误
+运行Flask web服务，客户端请求一直出现下面的连接错误
+1requests.exceptions.ConnectionError: HTTPConnectionPool(host=&#x27;ip&#x27;, port=666): Max retries exceeded 
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -2002,9 +2015,15 @@
       
         
           
-          CICD流程 CICD的中文名为持续集成/持续部署。其流程如下图：
+          CICD流程
+CICD的中文名为持续集成/持续部署。其流程如下图：
 
-CICD的意义减少重复过程减少重复的过程可以节省时间、费用和工作量。重复劳动可能包括代码编译、数据库集成、测试、审查、部署及反馈。通过自动化的持续集成可以将这些重复的动作都变成自动化的，无需太多人工干预，让人们的时间更多的投入到动
+
+img
+
+CICD的意义
+减少重复过程
+减少重复的过程可以节省时间、费用和工作量。重复劳动可能包括代码编译、数据库集成、测试、审查、部署及反馈。通过自动化的持续集成可以将这些重复的动作都变成自动化的，无需太多人工干预，让人们的时
           ...
           <!--noindex-->
           <div class="post-button text-center">

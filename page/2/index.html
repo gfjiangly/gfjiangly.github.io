@@ -157,11 +157,7 @@
 
 
 
-<!-- hexo injector head_end start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
+<meta name="generator" content="Hexo 8.1.1"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -616,7 +612,10 @@
           
 翻译自：https://preshing.com/20130922/acquire-and-release-fences/
 
-我认为，获取(acquire fence, afence)和释放屏障(release fence, rfence)目前在网络上还是被误解了。太糟糕了，因为C ++ 11标准
+我认为，获取(acquire fence,
+afence)和释放屏障(release fence,
+rfence)目前在网络上还是被误解了。太糟糕了，因为C ++
+11标准
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -788,7 +787,8 @@
 翻译自：https://preshing.com/20120710/memory-barriers-are-like-source-control-operations/
 略有修改
 
-如果使用源代码控制，那么您将逐渐理解内存顺序，这是使用C，C ++和其他语言编写无锁代码时的重要考虑因素。[PS：
+如果使用源代码控制，那么您将逐渐理解内存顺序，这是使用C，C
+++和其他语言编写无锁代码时的重要考虑因素。[PS：
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -956,12 +956,15 @@
       
         
           
-          什么是内存屏障（Memory Barrier）内存屏障是一个CPU指令。它是这样一条指令： 
+          什么是内存屏障（Memory
+Barrier）
+内存屏障是一个CPU指令。它是这样一条指令：
 
 确保一些特定操作执行的顺序；
 影响一些数据的可见性(可能是某些指令执行后的结果)。
 
-CPU核内部包含了多个执行单元。例如，现代Intel CPU包含了6个执行单元，可以组合进行算术运算，逻辑条件判断及内
+CPU核内部包含了多个执行单元。例如，现代Intel
+CPU包含了6个执行单元，可以组合进行算术运算，逻辑条件判断及内
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1130,10 +1133,12 @@ CPU核内部包含了多个执行单元。例如，现代Intel CPU包含了6个�
         
           
           从C++11开始，在STL中提供了thread模块对操作系统的C线程库进行了封装，避免了跨平台问题。但是，很多人觉得这个库封装的不够好。
-线程同步互斥量C++11中提供了如下4种语义的互斥量(mutex):
+线程同步
+互斥量
+C++11中提供了如下4种语义的互斥量(mutex):
 
 std::mutex：独占的互斥量，不能递归使用。
-std::timed_mutex：带超
+std::timed_mutex：
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1302,12 +1307,13 @@ std::timed_mutex：带超
         
           
           成员函数的重载（overload）、覆盖（override）与隐藏很容易混淆，梳理如下：
-一、重载《高质量C++/C编程指南》已经清晰的列出了重载函数的特性：
+一、重载
+《高质量C++/C编程指南》已经清晰的列出了重载函数的特性：
 （1）相同的范围（在同一个类中）；
 （2）函数名字相同；
 （3）参数不同；
 （4）virtual关键字可有可无。
-因为重载的函数之间参数不同
+因为重载的函数之间参数不
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1475,17 +1481,17 @@ std::timed_mutex：带超
       
         
           
-          一、临时量与临时对象临时量：
+          一、临时量与临时对象
+临时量：
 
 内置类型生成的临时量是常量（临时量，寄存器带出来）。
-
 自定义类型生成的临时量是变量 ，在内存中。
-
 
 临时对象：
 临时对象是系统临时分配的对象，在没主动声明所需对象而又使用其功能时产生的
 注意: 临时对象的生存周期只在本条语句。
-二、哪些情况产生临时量2.1 调用构
+二、哪些情况产生临时量
+2.1 调用构
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1653,11 +1659,14 @@ std::timed_mutex：带超
       
         
           
-          问题描述在未排序的数组中找到第 k 个最大的元素。请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
+          问题描述
+在未排序的数组中找到第 k
+个最大的元素。请注意，你需要找的是数组排序后的第 k
+个最大的元素，而不是第 k 个不同的元素。
 示例 1:
 12输入: [3,2,1,5,6,4] 和 k = 2输出: 5
 示例 2:
-12输入: [3,2,3,1,2,4,5,5,6] 和 k = 4输出: 4
+12输入: [3,2,3,1,2,4,5,5,6] 和 k = 4输出: 
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1825,9 +1834,11 @@ std::timed_mutex：带超
       
         
           
-          问题描述给定一个含有数字和运算符的字符串，为表达式添加括号，改变其运算优先级以求出不同的结果。你需要给出所有可能的组合的结果。有效的运算符号包含 +, - 以及 * 。
+          问题描述
+给定一个含有数字和运算符的字符串，为表达式添加括号，改变其运算优先级以求出不同的结果。你需要给出所有可能的组合的结果。有效的运算符号包含
++, - 以及 * 。
 示例 1:
-12345输入: &quot;2-1-1&quot;输出: [0, 2]解释: ((2-1)-1) = 0 (2-(1
+12345输入: &quot;2-1-1&quot;输出: [0, 2]解释: ((2-1)-1) = 0 (2-(
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1995,11 +2006,13 @@ std::timed_mutex：带超
       
         
           
-          问题描述给定一个包含红色、白色和蓝色，一共 n 个元素的数组，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。
+          问题描述
+给定一个包含红色、白色和蓝色，一共 n
+个元素的数组，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。
 此题中，我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色。
 注意: 不能使用代码库中的排序函数来解决这道题。
 示例:
-12输入: [2,0,2,1,1,
+12输入: [2,0,2,1,1
           ...
           <!--noindex-->
           <div class="post-button text-center">

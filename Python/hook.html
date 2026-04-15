@@ -105,12 +105,12 @@
 
 
 
-<meta name="description" content="Hook设计描述hook，又称钩子，在C&#x2F;C++中一般叫做回调函数。钩子是从功能角度描述这种编程模式，回调则是从函数调用时间角度描述的。通常理解的hook是在一个已有的方法上加入一些钩子，使得在该方法执行前或执行后另在做一些额外的处理。如我们熟知的windows系统消息响应事件，鼠标点击对程序产生的影响是有程序自己决定的，但是程序的执行是受制于框架（windows系统），框架提供了一些通用的流程执">
+<meta name="description" content="Hook设计描述 hook，又称钩子，在C&#x2F;C++中一般叫做回调函数。钩子是从功能角度描述这种编程模式，回调则是从函数调用时间角度描述的。通常理解的hook是在一个已有的方法上加入一些钩子，使得在该方法执行前或执行后另在做一些额外的处理。如我们熟知的windows系统消息响应事件，鼠标点击对程序产生的影响是有程序自己决定的，但是程序的执行是受制于框架（windows系统），框架提供了一些通用的流程">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Python之Hook设计">
 <meta property="og:url" content="https://gfjiangly.github.io/Python/hook.html">
 <meta property="og:site_name" content="jiang">
-<meta property="og:description" content="Hook设计描述hook，又称钩子，在C&#x2F;C++中一般叫做回调函数。钩子是从功能角度描述这种编程模式，回调则是从函数调用时间角度描述的。通常理解的hook是在一个已有的方法上加入一些钩子，使得在该方法执行前或执行后另在做一些额外的处理。如我们熟知的windows系统消息响应事件，鼠标点击对程序产生的影响是有程序自己决定的，但是程序的执行是受制于框架（windows系统），框架提供了一些通用的流程执">
+<meta property="og:description" content="Hook设计描述 hook，又称钩子，在C&#x2F;C++中一般叫做回调函数。钩子是从功能角度描述这种编程模式，回调则是从函数调用时间角度描述的。通常理解的hook是在一个已有的方法上加入一些钩子，使得在该方法执行前或执行后另在做一些额外的处理。如我们熟知的windows系统消息响应事件，鼠标点击对程序产生的影响是有程序自己决定的，但是程序的执行是受制于框架（windows系统），框架提供了一些通用的流程">
 <meta property="og:locale">
 <meta property="article:published_time" content="2019-12-21T15:01:00.000Z">
 <meta property="article:modified_time" content="2026-03-03T13:00:27.385Z">
@@ -162,11 +162,7 @@
 
 
 
-<!-- hexo injector head_end start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
+<meta name="generator" content="Hexo 8.1.1"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -441,31 +437,41 @@
       
 
       
-        <h2 id="Hook_u8BBE_u8BA1_u63CF_u8FF0"><a href="#Hook_u8BBE_u8BA1_u63CF_u8FF0" class="headerlink" title="Hook设计描述"></a>Hook设计描述</h2><p>hook，又称钩子，在C/C++中一般叫做回调函数。钩子是从功能角度描述这种编程模式，回调则是从函数调用时间角度描述的。通常理解的hook是在一个已有的方法上加入一些钩子，使得在该方法执行前或执行后另在做一些额外的处理。如我们熟知的windows系统消息响应事件，鼠标点击对程序产生的影响是有程序自己决定的，但是程序的执行是受制于框架（windows系统），框架提供了一些通用的流程执行，但是往往框架或流程在设计时无法完全预料到以后的使用会有什么新需求，或者有些行为只有在运行时才能确定的。这就产生了回调的需求，即用户提供需求，框架负责执行，流程先于具体需求，当触发或者满足某种条件时，执行Hook函数。hook函数的数据也是由用户自己提供的，框架只负责流程执行，这样框架的通用性就能大大提高。</p>
-<h2 id="Hook_u8BBE_u8BA1_u4E09_u8981_u7D20"><a href="#Hook_u8BBE_u8BA1_u4E09_u8981_u7D20" class="headerlink" title="Hook设计三要素"></a>Hook设计三要素</h2><ul>
+        <h2 id="hook设计描述">Hook设计描述</h2>
+<p>hook，又称钩子，在C/C++中一般叫做回调函数。钩子是从功能角度描述这种编程模式，回调则是从函数调用时间角度描述的。通常理解的hook是在一个已有的方法上加入一些钩子，使得在该方法执行前或执行后另在做一些额外的处理。如我们熟知的windows系统消息响应事件，鼠标点击对程序产生的影响是有程序自己决定的，但是程序的执行是受制于框架（windows系统），框架提供了一些通用的流程执行，但是往往框架或流程在设计时无法完全预料到以后的使用会有什么新需求，或者有些行为只有在运行时才能确定的。这就产生了回调的需求，即用户提供需求，框架负责执行，流程先于具体需求，当触发或者满足某种条件时，执行Hook函数。hook函数的数据也是由用户自己提供的，框架只负责流程执行，这样框架的通用性就能大大提高。</p>
+<h2 id="hook设计三要素">Hook设计三要素</h2>
+<ul>
 <li>hook函数或类：实现自定义操作或功能</li>
 <li>注册：只有经过注册的Hook才能被系统或框架调用</li>
 <li>挂载点：通常由系统或框架决定，用户无法修改</li>
 </ul>
-<h2 id="u8BBE_u8BA1_u5B9E_u4F8B"><a href="#u8BBE_u8BA1_u5B9E_u4F8B" class="headerlink" title="设计实例"></a>设计实例</h2><p>我们看看具体的设计实例：mmcv库的Run类。Run类负责训练流程执行，由用户提供的数据。</p>
+<h2 id="设计实例">设计实例</h2>
+<p>我们看看具体的设计实例：mmcv库的Run类。Run类负责训练流程执行，由用户提供的数据。</p>
 <p>Hook类是所有hook类的父类，规定了具体的调用名称和挂载点，如before_run、before_epoch、after_epoch、after_run等，注册的hook类需要具体实现自己的需求，例如实现自定义的学习率更新策略，框架会在Run中每个挂载点循环执行用户注册的所有hooks的相应挂载点方法，用户hooks是放在一个有序列表中，按优先级排列，优先级高的在前，先得到执行，优先级也是由用户确定的，这是用户仅有的权力。</p>
-<h3 id="hook_u8C03_u7528"><a href="#hook_u8C03_u7528" class="headerlink" title="hook调用"></a>hook调用</h3><p>形式比较优雅</p>
+<h3 id="hook调用">hook调用</h3>
+<p>形式比较优雅</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">call_hook</span>(<span class="params">self, fn_name</span>):</span><br><span class="line">    <span class="keyword">for</span> hook <span class="keyword">in</span> <span class="variable language_">self</span>._hooks:</span><br><span class="line">        <span class="built_in">getattr</span>(hook, fn_name)(<span class="variable language_">self</span>)</span><br></pre></td></tr></table></figure>
 <p>用户仅仅需要实现自己所需要的hook，如果没有自定义的hook，框架会调用父类Hook中相应的方法。父类Hook可能提供了一些默认行为，也可能什么都没做。</p>
-<h3 id="hook_u5B9E_u73B0"><a href="#hook_u5B9E_u73B0" class="headerlink" title="hook实现"></a>hook实现</h3><p>Hook设计举例之OptimizerHook，实现了after_train_iter挂载点方法</p>
+<h3 id="hook实现">hook实现</h3>
+<p>Hook设计举例之OptimizerHook，实现了after_train_iter挂载点方法</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">OptimizerHook</span>(<span class="title class_ inherited__">Hook</span>):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, grad_clip=<span class="literal">None</span></span>):</span><br><span class="line">        <span class="variable language_">self</span>.grad_clip = grad_clip</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">clip_grads</span>(<span class="params">self, params</span>):</span><br><span class="line">        clip_grad.clip_grad_norm_(</span><br><span class="line">            <span class="built_in">filter</span>(<span class="keyword">lambda</span> p: p.requires_grad, params), **<span class="variable language_">self</span>.grad_clip)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">after_train_iter</span>(<span class="params">self, runner</span>):</span><br><span class="line">        runner.optimizer.zero_grad()</span><br><span class="line">        runner.outputs[<span class="string">&#x27;loss&#x27;</span>].backward()</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.grad_clip <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="variable language_">self</span>.clip_grads(runner.model.parameters())</span><br><span class="line">        runner.optimizer.step()</span><br></pre></td></tr></table></figure>
 <p>其实实现hook时，用户的疑问往往是自定义hook需要使用的数据从哪里来？显然用户不知道Run类中有哪些数据。用户其实是知道的，因为Run中原本是没有数据的，它仅是一个流程执行类，其中的数据均来自与用户创建run时传入的，如runner.optimizer。所以可以看到，一个hook仅仅需要两个元素，一个是执行者，这里是runner，另外一个是执行时间（触发条件，挂载点），这里是after_train_iter。</p>
-<div class="note info"><br><p><br>注意一个hook类中具有所有挂载点，但是不必要实现所有挂载点方法，仅需实现本hook需要实现的挂载点方法<br></p><br></div>
-
-
-<h3 id="hook_u6CE8_u518C"><a href="#hook_u6CE8_u518C" class="headerlink" title="hook注册"></a>hook注册</h3><p>hook的注册过程比较简单，因为触发是按框架定义的流程顺序主动调用的，因此仅需要按优先级插入到有序列表中即可。</p>
+<div class="note info">
+<p>
+注意一个hook类中具有所有挂载点，但是不必要实现所有挂载点方法，仅需实现本hook需要实现的挂载点方法
+</p>
+</div>
+<h3 id="hook注册">hook注册</h3>
+<p>hook的注册过程比较简单，因为触发是按框架定义的流程顺序主动调用的，因此仅需要按优先级插入到有序列表中即可。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">register_hook</span>(<span class="params">self, hook, priority=<span class="string">&#x27;NORMAL&#x27;</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Register a hook into the hook list.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        hook (:obj:`Hook`): The hook to be registered.</span></span><br><span class="line"><span class="string">        priority (int or str or :obj:`Priority`): Hook priority.</span></span><br><span class="line"><span class="string">            Lower value means higher priority.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">assert</span> <span class="built_in">isinstance</span>(hook, Hook)</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">hasattr</span>(hook, <span class="string">&#x27;priority&#x27;</span>):</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">&#x27;&quot;priority&quot; is a reserved attribute for hooks&#x27;</span>)</span><br><span class="line">    priority = get_priority(priority)</span><br><span class="line">    hook.priority = priority</span><br><span class="line">    <span class="comment"># insert the hook to a sorted list</span></span><br><span class="line">    inserted = <span class="literal">False</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(<span class="variable language_">self</span>._hooks) - <span class="number">1</span>, -<span class="number">1</span>, -<span class="number">1</span>):</span><br><span class="line">        <span class="keyword">if</span> priority &gt;= <span class="variable language_">self</span>._hooks[i].priority:</span><br><span class="line">            <span class="variable language_">self</span>._hooks.insert(i + <span class="number">1</span>, hook)</span><br><span class="line">            inserted = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> inserted:</span><br><span class="line">        <span class="variable language_">self</span>._hooks.insert(<span class="number">0</span>, hook)</span><br></pre></td></tr></table></figure>
 <p>如果有一个hook需要在两个不同时机执行两个需求，如在before_train_epoch和after_train_epoch，但是恰巧这两个需求的优先级不同，这个时候建议写成两个hook，每个hook只负责做一件事，这也是编程中一般原则吧。</p>
-<h2 id="u9898_u5916_u8BDD"><a href="#u9898_u5916_u8BDD" class="headerlink" title="题外话"></a>题外话</h2><p>如果编写过windows窗体程序（如MFC），hook应该很容易理解，因为在MFC中回调太普遍了，这也是入门难（或者说难深入底层）的原因，框架默默帮你做了很多事，导致新入局者看不到全局。</p>
+<h2 id="题外话">题外话</h2>
+<p>如果编写过windows窗体程序（如MFC），hook应该很容易理解，因为在MFC中回调太普遍了，这也是入门难（或者说难深入底层）的原因，框架默默帮你做了很多事，导致新入局者看不到全局。</p>
 <p>这种Google风格docstring，我也是比较喜欢的，层次清楚，无多余字符，符合它本来的目的。可能是看惯了，统一就好。</p>
 <p>BTW，其实这个知识不应该写在python目录下的，但是如果想到一个知识就按一般化分类，最后可能发现分类太多，知识缺少具体场景依托。因为以后的文章可能位置比较随性~</p>
-<h2 id="u53C2_u8003_u6587_u732E"><a href="#u53C2_u8003_u6587_u732E" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
-<li><a href="https://blog.csdn.net/mybigkid/article/details/78383898">https://blog.csdn.net/mybigkid/article/details/78383898</a></li>
+<h2 id="参考文献">参考文献</h2>
+<ul>
+<li>https://blog.csdn.net/mybigkid/article/details/78383898</li>
 </ul>
 
       
@@ -562,7 +568,7 @@
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
     <a href="https://gfjiangly.github.io/Python/hook.html" title="Python之Hook设计">https://gfjiangly.github.io/Python/hook.html</a>
-    <span class="copy-path"  title="点击复制引用链接"><i style="cursor: pointer" class="fa fa-clipboard" data-clipboard-text="['s Blog | Python之Hook设计](https://gfjiangly.github.io/Python/hook.html)"  aria-label="post.copy_success"></i></span>
+    <span class="copy-path"  title="点击复制引用链接"><i style="cursor: pointer" class="fa fa-clipboard" data-clipboard-text="[Jiang.G.F's Blog | Python之Hook设计](https://gfjiangly.github.io/Python/hook.html)"  aria-label="复制成功！"></i></span>
   </li>
 
   <!-- 版权声明 -->
@@ -774,7 +780,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hook_u8BBE_u8BA1_u63CF_u8FF0"><span class="nav-number">1.</span> <span class="nav-text">Hook设计描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hook_u8BBE_u8BA1_u4E09_u8981_u7D20"><span class="nav-number">2.</span> <span class="nav-text">Hook设计三要素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8BBE_u8BA1_u5B9E_u4F8B"><span class="nav-number">3.</span> <span class="nav-text">设计实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hook_u8C03_u7528"><span class="nav-number">3.1.</span> <span class="nav-text">hook调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hook_u5B9E_u73B0"><span class="nav-number">3.2.</span> <span class="nav-text">hook实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hook_u6CE8_u518C"><span class="nav-number">3.3.</span> <span class="nav-text">hook注册</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u9898_u5916_u8BDD"><span class="nav-number">4.</span> <span class="nav-text">题外话</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u6587_u732E"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#hook%E8%AE%BE%E8%AE%A1%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">Hook设计描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hook%E8%AE%BE%E8%AE%A1%E4%B8%89%E8%A6%81%E7%B4%A0"><span class="nav-number">2.</span> <span class="nav-text">Hook设计三要素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E5%AE%9E%E4%BE%8B"><span class="nav-number">3.</span> <span class="nav-text">设计实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hook%E8%B0%83%E7%94%A8"><span class="nav-number">3.1.</span> <span class="nav-text">hook调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hook%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.2.</span> <span class="nav-text">hook实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hook%E6%B3%A8%E5%86%8C"><span class="nav-number">3.3.</span> <span class="nav-text">hook注册</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E5%A4%96%E8%AF%9D"><span class="nav-number">4.</span> <span class="nav-text">题外话</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>

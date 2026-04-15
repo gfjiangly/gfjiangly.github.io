@@ -105,12 +105,12 @@
 
 
 
-<meta name="description" content="问题描述以 Unix 风格给出一个文件的绝对路径，你需要简化它。或者换句话说，将其转换为规范路径。 在 Unix 风格的文件系统中，一个点（.）表示当前目录本身；此外，两个点 （..） 表示将目录切换到上一级（指向父目录）；两者都可以是复杂相对路径的组成部分。更多信息请参阅：Linux &#x2F; Unix中的绝对路径 vs 相对路径 请注意，返回的规范路径必须始终以斜杠 &#x2F; 开头，并且两个目录名之间必须">
+<meta name="description" content="问题描述 以 Unix 风格给出一个文件的绝对路径，你需要简化它。或者换句话说，将其转换为规范路径。 在 Unix 风格的文件系统中，一个点（.）表示当前目录本身；此外，两个点 （..） 表示将目录切换到上一级（指向父目录）；两者都可以是复杂相对路径的组成部分。更多信息请参阅：Linux &#x2F; Unix中的绝对路径 vs 相对路径 请注意，返回的规范路径必须始终以斜杠 &#x2F; 开头，并且两个目录名之间必">
 <meta property="og:type" content="article">
 <meta property="og:title" content="记录字节算法实习岗面试的一道算法题">
 <meta property="og:url" content="https://gfjiangly.github.io/leetcode/leetcode_71.html">
 <meta property="og:site_name" content="jiang">
-<meta property="og:description" content="问题描述以 Unix 风格给出一个文件的绝对路径，你需要简化它。或者换句话说，将其转换为规范路径。 在 Unix 风格的文件系统中，一个点（.）表示当前目录本身；此外，两个点 （..） 表示将目录切换到上一级（指向父目录）；两者都可以是复杂相对路径的组成部分。更多信息请参阅：Linux &#x2F; Unix中的绝对路径 vs 相对路径 请注意，返回的规范路径必须始终以斜杠 &#x2F; 开头，并且两个目录名之间必须">
+<meta property="og:description" content="问题描述 以 Unix 风格给出一个文件的绝对路径，你需要简化它。或者换句话说，将其转换为规范路径。 在 Unix 风格的文件系统中，一个点（.）表示当前目录本身；此外，两个点 （..） 表示将目录切换到上一级（指向父目录）；两者都可以是复杂相对路径的组成部分。更多信息请参阅：Linux &#x2F; Unix中的绝对路径 vs 相对路径 请注意，返回的规范路径必须始终以斜杠 &#x2F; 开头，并且两个目录名之间必">
 <meta property="og:locale">
 <meta property="article:published_time" content="2020-03-03T11:41:00.000Z">
 <meta property="article:modified_time" content="2026-03-03T13:00:27.397Z">
@@ -162,11 +162,7 @@
 
 
 
-<!-- hexo injector head_end start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
+<meta name="generator" content="Hexo 8.1.1"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -441,9 +437,19 @@
       
 
       
-        <h2 id="u95EE_u9898_u63CF_u8FF0"><a href="#u95EE_u9898_u63CF_u8FF0" class="headerlink" title="问题描述"></a>问题描述</h2><p>以 Unix 风格给出一个文件的<strong>绝对路径</strong>，你需要简化它。或者换句话说，将其转换为规范路径。</p>
-<p>在 Unix 风格的文件系统中，一个点（<code>.</code>）表示当前目录本身；此外，两个点 （<code>..</code>） 表示将目录切换到上一级（指向父目录）；两者都可以是复杂相对路径的组成部分。更多信息请参阅：<a href="https://blog.csdn.net/u011327334/article/details/50355600">Linux / Unix中的绝对路径 vs 相对路径</a></p>
-<p>请注意，返回的规范路径必须始终以斜杠 <code>/</code> 开头，并且两个目录名之间必须只有一个斜杠 <code>/</code>。最后一个目录名（如果存在）<strong>不能</strong>以 <code>/</code> 结尾。此外，规范路径必须是表示绝对路径的<strong>最短</strong>字符串。</p>
+        <h2 id="问题描述">问题描述</h2>
+<p>以 Unix
+风格给出一个文件的<strong>绝对路径</strong>，你需要简化它。或者换句话说，将其转换为规范路径。</p>
+<p>在 Unix
+风格的文件系统中，一个点（<code>.</code>）表示当前目录本身；此外，两个点
+（<code>..</code>）
+表示将目录切换到上一级（指向父目录）；两者都可以是复杂相对路径的组成部分。更多信息请参阅：<a href="https://blog.csdn.net/u011327334/article/details/50355600">Linux /
+Unix中的绝对路径 vs 相对路径</a></p>
+<p>请注意，返回的规范路径必须始终以斜杠 <code>/</code>
+开头，并且两个目录名之间必须只有一个斜杠
+<code>/</code>。最后一个目录名（如果存在）<strong>不能</strong>以
+<code>/</code>
+结尾。此外，规范路径必须是表示绝对路径的<strong>最短</strong>字符串。</p>
 <p><strong>示例 1：</strong></p>
 <figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="string">&quot;/home/&quot;</span></span><br><span class="line">输出：<span class="string">&quot;/home&quot;</span></span><br><span class="line">解释：注意，最后一个目录名后面没有斜杠。</span><br></pre></td></tr></table></figure>
 <p><strong>示例 2：</strong></p>
@@ -456,7 +462,8 @@
 <figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="string">&quot;/a/../../b/../c//.//&quot;</span></span><br><span class="line">输出：<span class="string">&quot;/c&quot;</span></span><br></pre></td></tr></table></figure>
 <p><strong>示例 6：</strong></p>
 <figure class="highlight v"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：<span class="string">&quot;/a//b////c/d//././/..&quot;</span></span><br><span class="line">输出：<span class="string">&quot;/a/b/c&quot;</span></span><br></pre></td></tr></table></figure>
-<h2 id="u903B_u8F91_u6E05_u6670_u7684_u89E3_u7B54"><a href="#u903B_u8F91_u6E05_u6670_u7684_u89E3_u7B54" class="headerlink" title="逻辑清晰的解答"></a>逻辑清晰的解答</h2><p>这道题是面试字节暑期实习算法岗的一道算法题。没通过AC，思路也没写对。通过这次面试，让我明白了原来“算法题”不仅仅考察算法，也考察我们的逻辑清晰度，这道题几乎没有什么算法在里面，只要我们考虑全面，基本都可以做出来。写的代码不被AC，或者思路不正确的大部分原因是输入情况未考虑全面，例如本题，当时我仅考虑到：</p>
+<h2 id="逻辑清晰的解答">逻辑清晰的解答</h2>
+<p>这道题是面试字节暑期实习算法岗的一道算法题。没通过AC，思路也没写对。通过这次面试，让我明白了原来“算法题”不仅仅考察算法，也考察我们的逻辑清晰度，这道题几乎没有什么算法在里面，只要我们考虑全面，基本都可以做出来。写的代码不被AC，或者思路不正确的大部分原因是输入情况未考虑全面，例如本题，当时我仅考虑到：</p>
 <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">1.</span> 含有一个点</span><br><span class="line"><span class="bullet">2.</span> 含有两个点</span><br><span class="line"><span class="bullet">3.</span> 开头有没有&#x27;/&#x27;，没有斜杠要怎么处理(与面试官讨论)</span><br><span class="line"><span class="bullet">4.</span> 结尾有没有&#x27;/&#x27;</span><br><span class="line"></span><br><span class="line"><span class="bullet">5.</span> 甚至误以为一个文件名只有一个字符，切到上一级目录使用了固定偏移(错的太多了)</span><br><span class="line"><span class="bullet">6.</span> 甚至没有考虑还有两个连续的&#x27;/&#x27;</span><br><span class="line"><span class="bullet">7.</span> 更别提考虑连续多级&#x27;..&#x27;</span><br></pre></td></tr></table></figure>
 <p>总之有太多case没考虑到，这提醒我们，在写代码之前一定不能只针对一种case写。很有可能自己想的算法本身就是错误的、行不通的。只有全面考虑多种case，并且认为自己的算法能够处理这么多种情况，或者很容易扩展处理，才可以写代码。</p>
 <p>我总想着把所有操作融入到一个循环中，以此提高效率，而没有从解决问题的本身出发。搞清楚本题本身是最重要的，效率其次之~</p>
@@ -559,7 +566,7 @@
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
     <a href="https://gfjiangly.github.io/leetcode/leetcode_71.html" title="记录字节算法实习岗面试的一道算法题">https://gfjiangly.github.io/leetcode/leetcode_71.html</a>
-    <span class="copy-path"  title="点击复制引用链接"><i style="cursor: pointer" class="fa fa-clipboard" data-clipboard-text="['s Blog | 记录字节算法实习岗面试的一道算法题](https://gfjiangly.github.io/leetcode/leetcode_71.html)"  aria-label="post.copy_success"></i></span>
+    <span class="copy-path"  title="点击复制引用链接"><i style="cursor: pointer" class="fa fa-clipboard" data-clipboard-text="[Jiang.G.F's Blog | 记录字节算法实习岗面试的一道算法题](https://gfjiangly.github.io/leetcode/leetcode_71.html)"  aria-label="复制成功！"></i></span>
   </li>
 
   <!-- 版权声明 -->
@@ -771,7 +778,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u95EE_u9898_u63CF_u8FF0"><span class="nav-number">1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u903B_u8F91_u6E05_u6670_u7684_u89E3_u7B54"><span class="nav-number">2.</span> <span class="nav-text">逻辑清晰的解答</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E6%B8%85%E6%99%B0%E7%9A%84%E8%A7%A3%E7%AD%94"><span class="nav-number">2.</span> <span class="nav-text">逻辑清晰的解答</span></a></li></ol></div>
             
 
           </div>

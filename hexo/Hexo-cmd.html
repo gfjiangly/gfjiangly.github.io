@@ -105,12 +105,12 @@
 
 
 
-<meta name="description" content="本文记录如何安装本地博客环境以及编译博客静态html页面推送到github page. 安装node.js和hexo博客框架 下载安装包: https:&#x2F;&#x2F;nodejs.org&#x2F;zh-cn&#x2F;download  安装hexo123456789# 配置 npm 全局包安装到用户目录（避免权限问题）mkdir -p ~&#x2F;.npm-globalnpm config set prefix &#x27;~&#x2F;.">
+<meta name="description" content="本文记录如何安装本地博客环境以及编译博客静态html页面推送到github page. 安装node.js和hexo博客框架  下载安装包: https:&#x2F;&#x2F;nodejs.org&#x2F;zh-cn&#x2F;download 安装hexo 123456789# 配置 npm 全局包安装到用户目录（避免权限问题）mkdir -p ~&#x2F;.npm-globalnpm config set prefix &#x27;~&#x2F;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="在github页面写Hexo博客">
 <meta property="og:url" content="https://gfjiangly.github.io/hexo/Hexo-cmd.html">
 <meta property="og:site_name" content="jiang">
-<meta property="og:description" content="本文记录如何安装本地博客环境以及编译博客静态html页面推送到github page. 安装node.js和hexo博客框架 下载安装包: https:&#x2F;&#x2F;nodejs.org&#x2F;zh-cn&#x2F;download  安装hexo123456789# 配置 npm 全局包安装到用户目录（避免权限问题）mkdir -p ~&#x2F;.npm-globalnpm config set prefix &#x27;~&#x2F;.">
+<meta property="og:description" content="本文记录如何安装本地博客环境以及编译博客静态html页面推送到github page. 安装node.js和hexo博客框架  下载安装包: https:&#x2F;&#x2F;nodejs.org&#x2F;zh-cn&#x2F;download 安装hexo 123456789# 配置 npm 全局包安装到用户目录（避免权限问题）mkdir -p ~&#x2F;.npm-globalnpm config set prefix &#x27;~&#x2F;">
 <meta property="og:locale">
 <meta property="article:published_time" content="2019-12-20T08:19:00.000Z">
 <meta property="article:modified_time" content="2026-03-03T13:56:07.092Z">
@@ -162,11 +162,7 @@
 
 
 
-<!-- hexo injector head_end start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
+<meta name="generator" content="Hexo 8.1.1"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -441,14 +437,19 @@
       
 
       
-        <p>本文记录如何安装本地博客环境以及编译博客静态html页面推送到github page.</p>
-<h2 id="u5B89_u88C5node-js_u548Chexo_u535A_u5BA2_u6846_u67B6"><a href="#u5B89_u88C5node-js_u548Chexo_u535A_u5BA2_u6846_u67B6" class="headerlink" title="安装node.js和hexo博客框架"></a>安装node.js和hexo博客框架</h2><ol>
-<li>下载安装包: <a href="https://nodejs.org/zh-cn/download">https://nodejs.org/zh-cn/download</a> </li>
-<li>安装hexo<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置 npm 全局包安装到用户目录（避免权限问题）</span></span><br><span class="line"><span class="built_in">mkdir</span> -p ~/.npm-global</span><br><span class="line">npm config <span class="built_in">set</span> prefix <span class="string">&#x27;~/.npm-global&#x27;</span></span><br><span class="line"><span class="comment"># 将自定义目录加入环境变量（zsh 终端）</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;export PATH=~/.npm-global/bin:$PATH&#x27;</span> &gt;&gt; ~/.zshrc</span><br><span class="line"><span class="comment"># 生效环境变量</span></span><br><span class="line"><span class="built_in">source</span> ~/.zshrc</span><br><span class="line"><span class="comment"># 重新安装 Hexo</span></span><br><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure></li>
+        <p>本文记录如何安装本地博客环境以及编译博客静态html页面推送到github
+page.</p>
+<h2 id="安装node.js和hexo博客框架">安装node.js和hexo博客框架</h2>
+<ol type="1">
+<li>下载安装包: https://nodejs.org/zh-cn/download</li>
+<li>安装hexo <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置 npm 全局包安装到用户目录（避免权限问题）</span></span><br><span class="line"><span class="built_in">mkdir</span> -p ~/.npm-global</span><br><span class="line">npm config <span class="built_in">set</span> prefix <span class="string">&#x27;~/.npm-global&#x27;</span></span><br><span class="line"><span class="comment"># 将自定义目录加入环境变量（zsh 终端）</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;export PATH=~/.npm-global/bin:$PATH&#x27;</span> &gt;&gt; ~/.zshrc</span><br><span class="line"><span class="comment"># 生效环境变量</span></span><br><span class="line"><span class="built_in">source</span> ~/.zshrc</span><br><span class="line"><span class="comment"># 重新安装 Hexo</span></span><br><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure></li>
 <li>安装本地依赖<code>npm install</code></li>
 </ol>
-<h2 id="hexo_u547D_u4EE4"><a href="#hexo_u547D_u4EE4" class="headerlink" title="hexo命令"></a>hexo命令</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo generate  <span class="comment"># 清理旧的编译缓存并重新生生静态页面</span></span><br><span class="line">hexo server  <span class="comment"># 本地启动服务，预览页面</span></span><br><span class="line">hexo deploy  <span class="comment"># 部署到github page上</span></span><br></pre></td></tr></table></figure>
-<h2 id="u672C_u5730_u535A_u5BA2_u6E90_u7801_u7684_u4FEE_u6539_u63A8_u9001github"><a href="#u672C_u5730_u535A_u5BA2_u6E90_u7801_u7684_u4FEE_u6539_u63A8_u9001github" class="headerlink" title="本地博客源码的修改推送github"></a>本地博客源码的修改推送github</h2><p>如果是第一次推送，还需要生成SSH密钥添加到github账户中，作为push凭证。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t ed25519 -C <span class="string">&quot;your_email@example.com&quot;</span></span><br><span class="line"><span class="built_in">cat</span> ~/.ssh/id_ed25519.pub</span><br><span class="line"></span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;更新xxx&quot;</span></span><br><span class="line">git push</span><br></pre></td></tr></table></figure></p>
+<h2 id="hexo命令">hexo命令</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo generate  <span class="comment"># 清理旧的编译缓存并重新生生静态页面</span></span><br><span class="line">hexo server  <span class="comment"># 本地启动服务，预览页面</span></span><br><span class="line">hexo deploy  <span class="comment"># 部署到github page上</span></span><br></pre></td></tr></table></figure>
+<h2 id="本地博客源码的修改推送github">本地博客源码的修改推送github</h2>
+<p>如果是第一次推送，还需要生成SSH密钥添加到github账户中，作为push凭证。
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t ed25519 -C <span class="string">&quot;your_email@example.com&quot;</span></span><br><span class="line"><span class="built_in">cat</span> ~/.ssh/id_ed25519.pub</span><br><span class="line"></span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;更新xxx&quot;</span></span><br><span class="line">git push</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -492,8 +493,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/hexo/blog-cfg.html" rel="next" title="本站更新记录">
-                <i class="fa fa-chevron-left"></i> 本站更新记录
+              <a href="/docker/docker-cmd.html" rel="next" title="docker常用命令">
+                <i class="fa fa-chevron-left"></i> docker常用命令
               </a>
             
           </div>
@@ -502,8 +503,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/hexo/hexo-next-write.html" rel="prev" title="hexo-next写作">
-                hexo-next写作 <i class="fa fa-chevron-right"></i>
+              <a href="/hexo/blog-cfg.html" rel="prev" title="本站更新记录">
+                本站更新记录 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -659,7 +660,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B89_u88C5node-js_u548Chexo_u535A_u5BA2_u6846_u67B6"><span class="nav-number">1.</span> <span class="nav-text">安装node.js和hexo博客框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hexo_u547D_u4EE4"><span class="nav-number">2.</span> <span class="nav-text">hexo命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u672C_u5730_u535A_u5BA2_u6E90_u7801_u7684_u4FEE_u6539_u63A8_u9001github"><span class="nav-number">3.</span> <span class="nav-text">本地博客源码的修改推送github</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85node.js%E5%92%8Chexo%E5%8D%9A%E5%AE%A2%E6%A1%86%E6%9E%B6"><span class="nav-number">1.</span> <span class="nav-text">安装node.js和hexo博客框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hexo%E5%91%BD%E4%BB%A4"><span class="nav-number">2.</span> <span class="nav-text">hexo命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E5%8D%9A%E5%AE%A2%E6%BA%90%E7%A0%81%E7%9A%84%E4%BF%AE%E6%94%B9%E6%8E%A8%E9%80%81github"><span class="nav-number">3.</span> <span class="nav-text">本地博客源码的修改推送github</span></a></li></ol></div>
             
 
           </div>
